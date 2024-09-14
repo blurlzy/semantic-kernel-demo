@@ -33,7 +33,7 @@ namespace ZL.SemanticKernelTests
         // It is used to store messages from different authors, such as users, assistants, tools, or the system.
         // As the primary mechanism for sending and receiving messages, the chat history object is essential for maintaining context and continuity in a conversation.
         [Fact]
-        public async Task Test2()
+        public async Task Chat_History_Test()
         {
             // Create a chat history object
             ChatHistory chatHistory = [];
