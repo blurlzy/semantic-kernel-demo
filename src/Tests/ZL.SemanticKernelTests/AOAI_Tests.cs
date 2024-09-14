@@ -1,14 +1,19 @@
-﻿using Microsoft.SemanticKernel;
+﻿
 using Xunit.Abstractions;
 
 namespace ZL.SemanticKernelTests
 {
     public class AOAI_Tests
     {
-        // endpoint & key
+        // AOAI endpoint & key
         private readonly string _endpoint = SecretManager.OpenAIEndpoint;
         private readonly string _key = SecretManager.OpenAIKey;
         private readonly string _deployment = "gpt-4o";
+
+        // azure search
+        private readonly string _searchEndpoint = "";
+        private readonly string _searchKey = "";
+        private readonly string _searchIndex = "";
 
         private readonly Kernel _kernel;
 
@@ -22,11 +27,37 @@ namespace ZL.SemanticKernelTests
                             .AddAzureOpenAIChatCompletion(_deployment, _endpoint, _key)
                             .Build();
 
+            
             _output = output;
             //// for OpenAI
             //_kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion(model, apiKey, orgId);
         }
 
+        [Fact]
+        public async Task Chat_Own_Data_Test()
+        {
+            // Create a chat history object
+            ChatHistory chatHistory = [];
+
+            // First question without previous context based on uploaded content.
+            chatHistory.AddUserMessage("How did Emily and David meet?");
+
+            var chatCompletion = _kernel.GetRequiredService<IChatCompletionService>();
+
+            var dataSource =  new AzureSearchChatDataSource
+            {
+                Endpoint = new Uri(_searchEndpoint),
+                Authentication = DataSourceAuthentication.FromApiKey(_searchKey),
+                IndexName = "" // index name
+            };
+
+            #pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            var promptExecutionSettings = new AzureOpenAIPromptExecutionSettings { AzureChatDataSource = dataSource };
+            #pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            var chatMessage = await chatCompletion.GetChatMessageContentAsync(chatHistory, promptExecutionSettings);
+            var response = chatMessage.Content!;
+        }
 
         // chat history
         // The chat history object is used to maintain a record of messages in a chat session.
