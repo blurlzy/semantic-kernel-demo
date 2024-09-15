@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZL.SemanticKernelDemo", "Console\ZL.SemanticKernelDemo\ZL.SemanticKernelDemo.csproj", "{03D0494F-0DDF-4C8F-8474-BD8527CFDF05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.SemanticKernelTests", "Tests\ZL.SemanticKernelTests\ZL.SemanticKernelTests.csproj", "{2E415D30-4BB8-41FC-8AD6-3F53381F758F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZL.SemanticKernelTests", "Tests\ZL.SemanticKernelTests\ZL.SemanticKernelTests.csproj", "{2E415D30-4BB8-41FC-8AD6-3F53381F758F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.SemanticKernelDemo.Host", "Host\ZL.SemanticKernelDemo.Host\ZL.SemanticKernelDemo.Host.csproj", "{B9637820-39BE-4B65-A94D-2221736678DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2E415D30-4BB8-41FC-8AD6-3F53381F758F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E415D30-4BB8-41FC-8AD6-3F53381F758F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E415D30-4BB8-41FC-8AD6-3F53381F758F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9637820-39BE-4B65-A94D-2221736678DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9637820-39BE-4B65-A94D-2221736678DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9637820-39BE-4B65-A94D-2221736678DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9637820-39BE-4B65-A94D-2221736678DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

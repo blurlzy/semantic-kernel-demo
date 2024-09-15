@@ -1,0 +1,6 @@
+@ZL.SemanticKernelDemo.Host_HostAddress = http://localhost:5003
+
+GET {{ZL.SemanticKernelDemo.Host_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
