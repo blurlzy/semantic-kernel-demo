@@ -1,5 +1,9 @@
 ﻿
+using Microsoft.SemanticKernel.ChatCompletion;
+using OpenAI.Chat;
+using System.Globalization;
 using Xunit.Abstractions;
+using static ZL.SemanticKernelTests.CopilotChatMessage;
 
 namespace ZL.SemanticKernelTests
 {
@@ -98,10 +102,96 @@ namespace ZL.SemanticKernelTests
             _output.WriteLine(results.ToString());
         }
 
+        // test allowed chat history based on token limits
+        [Fact]
+        public async Task Allowed_Chat_History_Test()
+        {
+            // Retrieving chat completion services
+            var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+            ChatHistory chatHistory = new ChatHistory();
+
+            // system prompt
+            chatHistory.AddSystemMessage("You are a helpful coding assistant.");
+
+            // first user prompt
+            chatHistory.AddUserMessage("Can you write a C# function which can compare 2 dates?");
+            // Get the chat message content
+            ChatMessageContent result1 = await chatCompletionService.GetChatMessageContentAsync(
+                chatHistory,
+                kernel: _kernel
+            );
+            // add assistant message
+            chatHistory.AddAssistantMessage(result1.ToString());
+            _output.WriteLine(result1.ToString());
+            _output.WriteLine("______________________________");
+
+            // add second user prompt
+            chatHistory.AddUserMessage("Can you convert it into python?");
+            ChatMessageContent result2 = await chatCompletionService.GetChatMessageContentAsync(
+                chatHistory,
+                kernel: _kernel
+            );
+            chatHistory.AddAssistantMessage(result2.ToString());
+            _output.WriteLine(result2.ToString());
+            _output.WriteLine("______________________________");
+            
+            // add third user prompy
+            chatHistory.AddUserMessage("Can you convert it into Typescript?");
+            ChatMessageContent result3 = await chatCompletionService.GetChatMessageContentAsync(
+                chatHistory,
+                kernel: _kernel
+            );
+            chatHistory.AddAssistantMessage(result3.ToString());
+            _output.WriteLine(result3.ToString());
+
+
+            var remainingToken = PromptsOptions.CompletionTokenLimit;
+            //string historyText = string.Empty;
+
+            // count the tokens
+            foreach (var message in chatHistory)
+            {
+                //var formattedMessage = message.ToFormattedString();
+                var formattedMessage = message.ToString();
+
+                // check the total tokens
+                int tokenCount = chatHistory is not null ? TokenUtils.GetContextMessageTokenCount(message.Role, formattedMessage) : TokenUtils.TokenCount(formattedMessage);
+
+                remainingToken -= tokenCount;
+            }
+
+            _output.WriteLine($"############### Remaining (Allowed) Token: {remainingToken}");
+        }
+
+        [Fact]
+        public async Task Allowed_Chat_Histroy_Test2()
+        {
+            // Retrieving chat completion services
+            var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+            ChatHistory chatHistory = new ChatHistory();
+
+            // system prompt
+            chatHistory.AddSystemMessage("You are a helpful coding assistant.");
+
+            // first user prompt
+            chatHistory.AddUserMessage("Can you write a C# function which can compare 2 dates?");
+            // chatHistory.AddUserMessage("Can you convert it into python?");
+            // chatHistory.AddUserMessage("Can you convert it into Typescript?");
+
+            ChatMessageContent result = await chatCompletionService.GetChatMessageContentAsync(
+                  chatHistory,
+                  kernel: _kernel
+              );
+            _output.WriteLine(result.ToString());
+        }
+
+
         //// Extract chat history within token limit as a formatted string and optionally update the ChatHistory object with the allotted messages
         //private async Task<string> GetAllowedChatHistoryAsync()
         //{
 
         //}
+
+
     }
 }
