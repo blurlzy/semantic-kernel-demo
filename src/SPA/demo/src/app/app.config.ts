@@ -9,6 +9,8 @@ import { IPublicClientApplication, PublicClientApplication, InteractionType, Bro
 import { MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration, 
     MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService,} from '@azure/msal-angular';
 
+import { MarkdownModule } from 'ngx-markdown';
+
 // app routes
 import { routes } from './app.routes';
 // env
@@ -21,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     importProvidersFrom(
       BrowserModule,
+      MarkdownModule.forRoot(),
     ),
     provideNoopAnimations(),
     // register msal interceptor
@@ -45,6 +48,7 @@ export const appConfig: ApplicationConfig = {
     MsalService,
     MsalGuard,
     MsalBroadcastService,
+
   ],
 };
 
