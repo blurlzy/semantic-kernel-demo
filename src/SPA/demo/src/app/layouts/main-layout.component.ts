@@ -11,7 +11,7 @@ import { MsalModule, MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalG
 	template: `
 	<header class="navbar sticky-top flex-md-nowrap p-2 border-bottom bg-light">
 		<a class="col-md-3 col-lg-2 px-3 fs-6 text-decoration-none text-black" routerLink="/">
-			<i class="bi bi-flower1 icon-large me-2"></i> forecastify
+			<i class="bi bi-flower1 icon-large me-2"></i> ZL Demo
 		</a> 
 		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button">
 			<span class="navbar-toggler-icon"></span>
@@ -59,9 +59,9 @@ import { MsalModule, MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalG
 
 				<!-- footer -->
 				<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-					<p>&copy; msft 2024, Zhen Yuan | Maki Tsuji | Wenshuo Han | Justin Li</p>
+					<p>&copy; ZL 2024</p>
 					<ul class="list-unstyled d-flex">
-						<li class="ms-3"><a class="link-body-emphasis" href="https://github.com/ms-zheny/forecastify" target="_blank"><i class="bi bi-github"></i></a></li>
+						<li class="ms-3"><a class="link-body-emphasis" href="https://github.com/blurlzy" target="_blank"><i class="bi bi-github"></i></a></li>
 					</ul>
 				</div>
 			</main>
