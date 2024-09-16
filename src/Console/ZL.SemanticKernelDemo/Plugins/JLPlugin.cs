@@ -9,7 +9,7 @@ namespace ZL.SemanticKernelDemo.Plugins
         [Description("Retrieve customer email based on the given customer ID.")]
         public async Task<Customer> GetCustomerInfoAsync(string customerId)
         {
-            return new Customer { Email = "zongyili@microsoft.com" };
+            return new Customer { Email = "justin.li@testing.com" };
         }
 
         public class Customer 
