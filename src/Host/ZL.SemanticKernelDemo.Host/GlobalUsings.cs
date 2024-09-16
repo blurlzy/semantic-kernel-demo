@@ -16,3 +16,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using ZL.SemanticKernelDemo.Host;
 global using ZL.SemanticKernelDemo.Host.Attributes;
 global using ZL.SemanticKernelDemo.Host.Models;
+global using ZL.SemanticKernelDemo.Host.Services.Plugins;

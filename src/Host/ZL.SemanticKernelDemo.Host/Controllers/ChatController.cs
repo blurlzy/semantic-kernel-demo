@@ -1,4 +1,5 @@
-﻿
+﻿using Microsoft.SemanticKernel;
+
 
 namespace ZL.SemanticKernelDemo.Host.Controllers
 {
@@ -45,6 +46,31 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
             };
 
             return this.Ok(chatAskResult);
+        }
+
+
+        [Route("plugins")]
+        [HttpGet]
+        public async Task<IActionResult> TestAsync([FromServices] Kernel kernel)
+        {
+            // get the function
+            KernelFunction myFunc = kernel.Plugins.GetFunction("CustomerPlugin", "GetCustomerInfo");
+
+            // Invoke function through kernel
+            FunctionResult customer = await kernel.InvokeAsync(myFunc, new() { ["customerId"] = "JL" });
+
+            // Initialize the chat history with the weather
+            ChatHistory chatHistory = new ChatHistory();
+
+            // Simulate a user message
+            chatHistory.AddSystemMessage("You are a helpful assistan. Please note: Justin's email address is: " + customer.GetValue<Customer>().Email);
+            chatHistory.AddUserMessage("Can you please tell me what's Justin's email address?");
+
+            var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
+            var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
+
+
+            return Ok(new { result = result });
         }
     }
 }

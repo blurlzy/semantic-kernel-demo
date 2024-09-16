@@ -18,9 +18,22 @@ namespace ZL.SemanticKernelDemo.Host
                     var provider = sp.GetRequiredService<SemanticKernelProvider>();
                     var kernel = provider.GetCompletionKernel();
 
+                    // plugins
+                    // kernel.ImportPluginFromObject(new CustomerPlugin(), nameof(CustomerPlugin));
+                    kernel.ImportPluginFromType<CustomerPlugin>();
                     return kernel;
                 });
+
         }
+
+        //private static Task RegisterChatCopilotFunctionsAsync(IServiceProvider sp, Kernel kernel)
+        //{
+        //    // customer plugin 
+        //    kernel.ImportPluginFromObject(new CustomerPlugin(), nameof(CustomerPlugin));
+
+        //    return Task.CompletedTask;
+        //}
+
 
         // configure CORS policy
         public static void ConfigureCors(this IServiceCollection services, string corsPolicy)

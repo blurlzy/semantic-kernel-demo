@@ -1,9 +1,14 @@
 ﻿
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using OpenAI.Chat;
 using System.Globalization;
+using System.Net;
+using System.Text.Json;
 using Xunit.Abstractions;
+using ZL.SemanticKernelTests.Plugins;
 using static ZL.SemanticKernelTests.CopilotChatMessage;
+using static ZL.SemanticKernelTests.Plugins.CustomerPlugin;
 
 namespace ZL.SemanticKernelTests
 {
@@ -26,12 +31,22 @@ namespace ZL.SemanticKernelTests
         // ctor
         public AOAI_Tests(ITestOutputHelper output)
         {
-            // for Azure OpenAI
-            _kernel = Kernel.CreateBuilder()
-                            .AddAzureOpenAIChatCompletion(_deployment, _endpoint, _key)
-                            .Build();
+            IKernelBuilder builder = Kernel.CreateBuilder();
+            // add AOAI
+            builder.AddAzureOpenAIChatCompletion(_deployment, _endpoint, _key);
+            // add plugin
+            builder.Plugins.AddFromType<CustomerPlugin>();
 
-            
+            // kernal
+            _kernel = builder.Build();
+
+            //// for Azure OpenAI
+            //_kernel = Kernel.CreateBuilder()
+            //                .AddAzureOpenAIChatCompletion(_deployment, _endpoint, _key)
+            //                .Build();
+
+            // add plugin
+
             _output = output;
             //// for OpenAI
             //_kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion(model, apiKey, orgId);
@@ -185,6 +200,29 @@ namespace ZL.SemanticKernelTests
             _output.WriteLine(result.ToString());
         }
 
+        [Theory]
+        [InlineData("JL")]
+        public async Task Customer_Plugin_Test(string customerId)
+        {
+            // init a plugin
+            KernelPlugin myPlugin = _kernel.CreatePluginFromType<CustomerPlugin>();
+
+            // Invoke function through kernel
+            FunctionResult customer = await _kernel.InvokeAsync(myPlugin["GetCustomerInfo"], new() { ["customerId"] = customerId });
+
+            // Initialize the chat history with the weather
+            ChatHistory chatHistory = new ChatHistory();
+
+            // _output.WriteLine($"The JL's email is:  + {customer.GetValue<Customer>().Email}");
+            // Simulate a user message
+            chatHistory.AddSystemMessage("You are a helpful assistan. Please note: Justin's email address is: " + customer.GetValue<Customer>().Email);
+            chatHistory.AddUserMessage("Can you please tell me what's Justin's email address?");
+
+            var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+            var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
+
+            _output.WriteLine(result.ToString());
+        }
 
         //// Extract chat history within token limit as a formatted string and optionally update the ChatHistory object with the allotted messages
         //private async Task<string> GetAllowedChatHistoryAsync()
