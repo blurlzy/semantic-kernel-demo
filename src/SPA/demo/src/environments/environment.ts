@@ -2,8 +2,8 @@ export const environment = {
     production: true,
     msalConfig: {
       auth: {
-        clientId: '2c06ad20-d923-4ed5-84e7-4dadea8d7d92',
-        authority: 'https://login.microsoftonline.com/16b3c013-d300-468d-ac64-7eda0820b6d3',
+        clientId: '16deee61-e9e6-4493-b1a3-57ed14e1c33b',
+        authority: 'https://login.microsoftonline.com/885ba0b1-68d5-40e2-adaa-238cb699dbdc',
       },
     },
     apiConfig: {
@@ -11,7 +11,7 @@ export const environment = {
       uri: 'https://graph.microsoft.com/v1.0/me',
     },
     copilotApiConfig: {
-      scopes: ['api://9d829b28-5191-4629-90ec-cbd98cda6053/access_as_user'],
+      scopes: ['api://eaa59094-d365-45df-a7c5-aae17459e3b9/access_as_user'],
       uri: 'https://localhost:7203/api',
     }
   };
