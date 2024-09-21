@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 // angular material
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
@@ -16,13 +16,14 @@ import { ChatService, ChatSession } from './chat-service';
   template: `
     <div class="sidebar">
       <button class="new-chat-button" (click)="addSession()">+ New Chat</button>
-      <ul>
+      <ul class="border-top">
         <li *ngFor="let session of sessions" [class.active]="session.id === currentSessionId">            
-            @if(session.id === currentSessionId) {
+            @if(session.id === editSessionId) {
                 <input class="form-control" [(ngModel)]="session.title" (blur)="save(session)">
             }
             @else{
-              <span><a [routerLink]="['/chat']" [queryParams]="{ id: session.id }" class="text-dark text-decoration-none">{{ session.title }}</a></span>
+              <a [routerLink]="['/chat']" [queryParams]="{ id: session.id }" class="text-dark text-decoration-none">{{ session.title }}</a>
+              <i class="bi bi-check-lg" *ngIf="session.id == currentSessionId"></i>
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                   <i class="bi bi-three-dots-vertical"></i>
               </button>
@@ -52,10 +53,16 @@ import { ChatService, ChatSession } from './chat-service';
       text-align: left;
       font-size: 16px;
       cursor: pointer;
+      background-color: transparent;
     }
 
-    .new-chat-button:hover {
-      
+    .sidebar li a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
     }
 
     .sidebar ul {
@@ -78,33 +85,20 @@ import { ChatService, ChatSession } from './chat-service';
     }
 
     .sidebar li.active {
-
+      background-color: #f5f4f0;
     }
 
-    .sidebar li span {
-      flex: 1;
-    }
-
-    .delete-button {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .delete-button:hover {
-   
-    }
   `
 })
 export class SidebarComponent {
   sessions: ChatSession[] = [];
+  editSessionId:number | null = null;
   currentSessionId: number | null = null;
   newSessionTitle: string = 'New Chat';
 
   // ctor
-  constructor(private chatService: ChatService) {
+  constructor(private activatedRoute: ActivatedRoute,
+             private chatService: ChatService) {
     this.chatService.sessions$.subscribe((sessions) => {
       this.sessions = sessions;
     });
@@ -114,12 +108,21 @@ export class SidebarComponent {
     });
   }
 
+  ngOnInit() {  
+    // query params change
+		this.activatedRoute.queryParams.subscribe(params => {
+      //console.log(params);
+      this.currentSessionId = +params["id"];
+      console.log(this.currentSessionId);
+		});
+  }
+
   addSession() {
     this.chatService.addSession(this.newSessionTitle);
   }
 
   selectSession(id: number) {
-    this.currentSessionId = id;
+    this.editSessionId = id;
     //this.chatService.setCurrentSession(id);
   }
 
@@ -130,7 +133,7 @@ export class SidebarComponent {
 
   save(session: any) {
     // reset 
-    this.currentSessionId = null;
+    this.editSessionId = null;
     console.log(session);
   }
 
