@@ -17,6 +17,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { routes } from './app.routes';
 // env
 import { environment } from '../environments/environment';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 // app config
 export const appConfig: ApplicationConfig = {
@@ -49,7 +50,7 @@ export const appConfig: ApplicationConfig = {
     },
     MsalService,
     MsalGuard,
-    MsalBroadcastService,
+    MsalBroadcastService, provideAnimationsAsync(),
 
   ],
 };

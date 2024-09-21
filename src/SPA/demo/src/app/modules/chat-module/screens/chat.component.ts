@@ -3,13 +3,17 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, Subject } from 'rxjs';
+import { MarkdownModule } from 'ngx-markdown';
+// material
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ChatDataService } from '../chat.data.service';
 import { Loader } from '../../../core/loader.service';
-import { MarkdownModule } from 'ngx-markdown';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MarkdownModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MarkdownModule, MatFormFieldModule, MatInputModule],
   template: `
   <div class="chat-container">
     <div class="messages">
@@ -46,15 +50,16 @@ import { MarkdownModule } from 'ngx-markdown';
     </div>
 
     <div class="input-area">
-      <input type="text" [formControl]="userInput" placeholder="Type your message..." />
-      <button type="button" class="btn btn-light" [disabled]="userInput.invalid || (loader.isLoading | async)" (click)="send()">
+      <textarea class="form-control me-1" [formControl]="userInput" rows="2"></textarea>
+      
+      <button type="button" class="btn btn-light " [disabled]="userInput.invalid || (loader.isLoading | async)" (click)="send()">
 				@if (loader.isLoading | async) {
 					<div class="spinner-grow text-primary" role="status">
 						<span class="visually-hidden">Loading...</span>
 					</div>
 				}
 				@else {
-					<i class="bi bi-send"></i> Send
+					<i class="bi bi-send "></i> Send
 				}
 					
 				</button>
@@ -64,7 +69,7 @@ import { MarkdownModule } from 'ngx-markdown';
   styles: `
   .chat-container {
       width: 100%;
-      min-height: 60vh;
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
       border: none;
