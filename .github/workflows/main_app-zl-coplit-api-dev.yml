@@ -7,12 +7,15 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: 
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: "./src/Host/ZL.SemanticKernelDemo.Host"
+        
     steps:
       - uses: actions/checkout@v4
 
