@@ -121,18 +121,9 @@ import { Loader } from '../../../core/loader.service';
 
     .input-area {
       display: flex;
-      padding: 15px;
+      padding: 10px;
       border-top: 1px solid #e0e0e0;
       background-color: #fafafa;
-    }
-
-    .input-area input {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 25px;
-      outline: none;
     }
 
     .input-area button {
@@ -142,7 +133,7 @@ import { Loader } from '../../../core/loader.service';
       border: none;
       background-color: #0b93f6;
       color: #fff;
-      border-radius: 25px;
+      border-radius: 15px;
       cursor: pointer;
     }
 

@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, MatMenuModule, MatButtonModule],
   template: `
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="z-index: 9999999;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" style="z-index: 99;">
       <div class="container-fluid">
         	<a  class="navbar-brand" routerLink="/">
             <i class="bi bi-flower1 icon-large me-2"></i> ZL Demo
