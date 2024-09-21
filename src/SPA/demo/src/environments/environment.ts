@@ -10,7 +10,7 @@ export const environment = {
       scopes: ['user.read'],
       uri: 'https://graph.microsoft.com/v1.0/me',
     },
-    apiConfig2: {
+    copilotApiConfig: {
       scopes: ['api://9d829b28-5191-4629-90ec-cbd98cda6053/access_as_user'],
       uri: 'https://localhost:7203/api',
     }

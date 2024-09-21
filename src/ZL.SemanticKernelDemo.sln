@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZL.SemanticKernelDemo", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZL.SemanticKernelTests", "Tests\ZL.SemanticKernelTests\ZL.SemanticKernelTests.csproj", "{2E415D30-4BB8-41FC-8AD6-3F53381F758F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.SemanticKernelDemo.Host", "Host\ZL.SemanticKernelDemo.Host\ZL.SemanticKernelDemo.Host.csproj", "{B9637820-39BE-4B65-A94D-2221736678DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZL.SemanticKernelDemo.Host", "Host\ZL.SemanticKernelDemo.Host\ZL.SemanticKernelDemo.Host.csproj", "{B9637820-39BE-4B65-A94D-2221736678DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70644372-8633-4040-B2CA-CE4411C02067}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

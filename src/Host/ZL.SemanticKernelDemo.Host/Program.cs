@@ -1,4 +1,5 @@
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using ZL.SemanticKernelDemo.Host.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager()
 
 
 // Add services to the container.
+// add entra id auth
+builder.Services.ConfigureAzureEntraIDAuth(builder.Configuration);
 // register semantic kernel 
 builder.Services.ConfigureSemanticKernel(builder.Configuration);
 // api controller
@@ -36,10 +39,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// get the logger instance from the app
+// ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
+// error handling pipeline (middleware)
+app.UseGlobalExceptionHandler(app.Logger);
+
+
 app.UseHttpsRedirection();
 // configure cors
 app.UseCors("AllowCors");
-
+// authentication & authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

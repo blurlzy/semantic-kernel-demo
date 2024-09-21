@@ -64,7 +64,7 @@ import { MarkdownModule } from 'ngx-markdown';
   styles: `
   .chat-container {
       width: 100%;
-      height: 83vh;
+      min-height: 60vh;
       display: flex;
       flex-direction: column;
       border: none;

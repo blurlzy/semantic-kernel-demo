@@ -66,7 +66,7 @@ export class ProfileComponent {
   // retreive access token
   private retreiveAccessToken() {
     var request = {
-      scopes: environment.apiConfig2.scopes,
+      scopes: environment.copilotApiConfig.scopes,
   };
   
   this.authService.acquireTokenSilent(request).subscribe(tokenResponse => {

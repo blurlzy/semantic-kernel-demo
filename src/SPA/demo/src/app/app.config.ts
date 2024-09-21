@@ -2,12 +2,14 @@ import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } fr
 import { provideRouter } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 // http module
-import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch,} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch, } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 // msal module
-import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel,} from '@azure/msal-browser';
-import { MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration, 
-    MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService,} from '@azure/msal-angular';
+import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel, } from '@azure/msal-browser';
+import {
+  MsalInterceptor, MSAL_INSTANCE, MsalInterceptorConfiguration, MsalGuardConfiguration,
+  MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService,
+} from '@azure/msal-angular';
 
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -81,15 +83,16 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
+  // copilot api
+  protectedResourceMap.set(
+    environment.copilotApiConfig.uri,
+    environment.copilotApiConfig.scopes
+  );
+  // MS Graph
   protectedResourceMap.set(
     environment.apiConfig.uri,
     environment.apiConfig.scopes
   );
-
-  // protectedResourceMap.set(
-  //   environment.apiConfig2.uri,
-  //   environment.apiConfig2.scopes
-  // );
 
   return {
     interactionType: InteractionType.Redirect,

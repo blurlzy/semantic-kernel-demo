@@ -1,8 +1,7 @@
-﻿using Microsoft.SemanticKernel;
-
-
+﻿
 namespace ZL.SemanticKernelDemo.Host.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ChatController : ControllerBase
@@ -48,7 +47,7 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
             return this.Ok(chatAskResult);
         }
 
-
+        [AllowAnonymous]
         [Route("plugins")]
         [HttpGet]
         public async Task<IActionResult> TestAsync([FromServices] Kernel kernel)

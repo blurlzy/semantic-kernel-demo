@@ -9,8 +9,7 @@ export class ChatDataService {
   constructor(private http: HttpClient) {}
 
   getChatMessages(request:any): Observable<any> {
-    console.log(`${environment.apiConfig2.uri}/Chat/Messages`);
-    return this.http.post(`${environment.apiConfig2.uri}/Chat/Messages`, request);
+    return this.http.post(`${environment.copilotApiConfig.uri}/Chat/Messages`, request);
   }
 
   // // temp test
