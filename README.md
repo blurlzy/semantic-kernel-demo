@@ -5,6 +5,7 @@ A Chat bot demo application built on top of Semantic Kernel.
 
 ```
 https://github.com/microsoft/semantic-kernel
+https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples
 ```
 
 ## Backend (Asp.net Core Web API)
@@ -20,12 +21,6 @@ dotnet add package Microsoft.Identity.Web
 dotnet add package Azure.Identity
 dotnet add package Azure.Security.KeyVault.Secrets
 dotnet add package SharpToken
-```
-
-### Semantic Kernel C# Samples
-
-```
-https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples
 ```
 
 ### Azure Entra ID Configuration
@@ -46,7 +41,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 ```
 
-### add auth middlewares to pipeline
+### Add auth middleware to pipeline
 ```
 app.UseAuthentication();
 app.UseAuthorization();

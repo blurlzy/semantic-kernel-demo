@@ -104,9 +104,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
-    authRequest: {
-      scopes: [...environment.apiConfig.scopes],
-    },
+    // authRequest: {
+    //   scopes: [...environment.apiConfig.scopes],
+    // },
     loginFailedRoute: '/login-failed',
   };
 }
