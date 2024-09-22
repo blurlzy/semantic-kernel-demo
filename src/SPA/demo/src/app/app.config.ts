@@ -71,14 +71,14 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     cache: {
       cacheLocation: BrowserCacheLocation.LocalStorage,
     },
-    system: {
-      allowNativeBroker: false, // Disables WAM Broker
-      loggerOptions: {
-        loggerCallback,
-        logLevel: LogLevel.Info,
-        piiLoggingEnabled: false,
-      },
-    },
+    // system: {
+    //   allowNativeBroker: false, // Disables WAM Broker
+    //   loggerOptions: {
+    //     loggerCallback,
+    //     logLevel: LogLevel.Info,
+    //     piiLoggingEnabled: false,
+    //   },
+    // },
   });
 }
 
