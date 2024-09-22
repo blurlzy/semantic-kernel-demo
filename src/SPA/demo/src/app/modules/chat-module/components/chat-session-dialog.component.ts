@@ -52,7 +52,7 @@ export class ChatSessionDialogComponent {
       .pipe(finalize(() => this.loader.isLoading.next(false)))
       .subscribe((response) => {
         // add into menu        
-        console.log(response);
+        //console.log(response);
         this.menuService.addItem(response.id, response.title);    
         this.dialogRef.close();  
       }); 
