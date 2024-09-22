@@ -40,95 +40,95 @@ npm install @azure/msal-browser @azure/msal-angular@latest
 ```
 
 ```
-	export const appConfig: ApplicationConfig = {
-		providers: [
-			provideZoneChangeDetection({ eventCoalescing: true }),
-			provideRouter(routes),
-			importProvidersFrom(
-				BrowserModule,
-				MarkdownModule.forRoot(),
-			),
-			provideNoopAnimations(),
-			// register msal interceptor
-			provideHttpClient(withInterceptorsFromDi(), withFetch()),
-			{
-				provide: HTTP_INTERCEPTORS,
-				useClass: MsalInterceptor,
-				multi: true,
-			},
-			{
-				provide: MSAL_INSTANCE,
-				useFactory: MSALInstanceFactory,
-			},
-			{
-				provide: MSAL_GUARD_CONFIG,
-				useFactory: MSALGuardConfigFactory,
-			},
-			{
-				provide: MSAL_INTERCEPTOR_CONFIG,
-				useFactory: MSALInterceptorConfigFactory,
-			},
-			MsalService,
-			MsalGuard,
-			MsalBroadcastService, provideAnimationsAsync(),
+export const appConfig: ApplicationConfig = {
+	providers: [
+		provideZoneChangeDetection({ eventCoalescing: true }),
+		provideRouter(routes),
+		importProvidersFrom(
+			BrowserModule,
+			MarkdownModule.forRoot(),
+		),
+		provideNoopAnimations(),
+		// register msal interceptor
+		provideHttpClient(withInterceptorsFromDi(), withFetch()),
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: MsalInterceptor,
+			multi: true,
+		},
+		{
+			provide: MSAL_INSTANCE,
+			useFactory: MSALInstanceFactory,
+		},
+		{
+			provide: MSAL_GUARD_CONFIG,
+			useFactory: MSALGuardConfigFactory,
+		},
+		{
+			provide: MSAL_INTERCEPTOR_CONFIG,
+			useFactory: MSALInterceptorConfigFactory,
+		},
+		MsalService,
+		MsalGuard,
+		MsalBroadcastService, provideAnimationsAsync(),
 
-		],
+	],
+};
+```
+
+```
+export function MSALInstanceFactory(): IPublicClientApplication {
+	return new PublicClientApplication({
+		auth: {
+			clientId: environment.msalConfig.auth.clientId,
+			authority: environment.msalConfig.auth.authority,
+			redirectUri: '/',
+			postLogoutRedirectUri: '/',
+		},
+		cache: {
+			cacheLocation: BrowserCacheLocation.LocalStorage,
+		},
+		system: {
+			allowNativeBroker: false, // Disables WAM Broker
+			loggerOptions: {
+			loggerCallback,
+			logLevel: LogLevel.Info,
+			piiLoggingEnabled: false,
+			},
+		},
+	});
+}
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+	const protectedResourceMap = new Map<string, Array<string>>();
+	// copilot api
+	protectedResourceMap.set(
+		environment.copilotApiConfig.uri,
+		environment.copilotApiConfig.scopes
+	);
+
+	return {
+		interactionType: InteractionType.Redirect,
+		protectedResourceMap,
 	};
-```
+}
 
-```
-	export function MSALInstanceFactory(): IPublicClientApplication {
-		return new PublicClientApplication({
-			auth: {
-				clientId: environment.msalConfig.auth.clientId,
-				authority: environment.msalConfig.auth.authority,
-				redirectUri: '/',
-				postLogoutRedirectUri: '/',
-			},
-			cache: {
-				cacheLocation: BrowserCacheLocation.LocalStorage,
-			},
-			system: {
-				allowNativeBroker: false, // Disables WAM Broker
-				loggerOptions: {
-				loggerCallback,
-				logLevel: LogLevel.Info,
-				piiLoggingEnabled: false,
-				},
-			},
-		});
-		}
-
-	export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
-		const protectedResourceMap = new Map<string, Array<string>>();
-		// copilot api
-		protectedResourceMap.set(
-			environment.copilotApiConfig.uri,
-			environment.copilotApiConfig.scopes
-		);
-
-		return {
-			interactionType: InteractionType.Redirect,
-			protectedResourceMap,
-		};
-	}
-
-	export function MSALGuardConfigFactory(): MsalGuardConfiguration {
-		return {
-			interactionType: InteractionType.Redirect,
-			loginFailedRoute: '/login-failed',
-		};
-	}
+export function MSALGuardConfigFactory(): MsalGuardConfiguration {
+	return {
+		interactionType: InteractionType.Redirect,
+		loginFailedRoute: '/login-failed',
+	};
+}
 	
-	export function loggerCallback(logLevel: LogLevel, message: string) {
-		console.log(message);
-	}
+export function loggerCallback(logLevel: LogLevel, message: string) {
+	console.log(message);
+}
 
 ```
 
 ### Using the MSAL Guard to protect routes and require authentication before accessing the protected route.
 ```
-	export const public_routes: Routes = [
-		{ path: '', component: ChatComponent, canActivate: [MsalGuard] },
-	];
+export const public_routes: Routes = [
+	{ path: '', component: ChatComponent, canActivate: [MsalGuard] },
+];
 ```
