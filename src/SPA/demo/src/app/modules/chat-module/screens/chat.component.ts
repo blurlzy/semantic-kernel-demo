@@ -8,7 +8,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ChatDataService } from '../chat.data.service';
-import { Loader } from '../../../core/loader.service';
+import { ChatLoader } from '../../../core/chat-loader.service';
 
 @Component({
   selector: 'app-chat',
@@ -188,7 +188,7 @@ export class ChatComponent {
   // ctor
   constructor(private sanitizer: DomSanitizer,
             private chatService: ChatDataService,
-				    public loader: Loader) {
+				    public loader: ChatLoader) {
 
   }
 

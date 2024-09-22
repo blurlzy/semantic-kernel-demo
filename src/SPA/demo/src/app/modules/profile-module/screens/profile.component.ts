@@ -36,7 +36,7 @@ export class ProfileComponent {
 
   ngOnInit() {
     this.checkAndSetActiveAccount();
-    this.retreiveAccessToken();
+    //this.retreiveAccessToken();
   }
 
   signOut(): void {
@@ -67,9 +67,9 @@ export class ProfileComponent {
   private retreiveAccessToken() {
     var request = {
       scopes: environment.copilotApiConfig.scopes,
-  };
-  
-  this.authService.acquireTokenSilent(request).subscribe(tokenResponse => {
+    };
+
+    this.authService.acquireTokenSilent(request).subscribe(tokenResponse => {
       // Do something with the tokenResponse
       console.log(tokenResponse);
     });
