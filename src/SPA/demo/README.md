@@ -17,12 +17,25 @@ https://github.com/AzureAD/microsoft-authentication-library-for-js
 
 Before using `@azure/msal-angular`, [register an application in Azure AD](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app) to get your `clientId`.
 
-## Installation
+### Installation
 
-The `@azure/msal-angular` package is available on NPM:
+- Install @azure/msal-angular 
+- Install @angular/material 
+- Install bootstrap-icons
+- Install ngx-markdown - ngx-markdown is an Angular library that combines...
+  - Marked to parse markdown to HTML
+  - Prism.js for language syntax highlight
+  - Emoji-Toolkit for emoji support (optional)
+  - KaTeX for math expression rendering (optional)
+  - Mermaid for diagrams and charts visualization (optional)
+  - Clipboard.js to copy code blocks to clipboard (optional)
 
 ```
 npm install @azure/msal-browser @azure/msal-angular@latest
+npm i bootstrap-icons
+npm install ngx-markdown marked@^12.0.0 --save
+npm install prismjs@^1.28.0 --save
+ng add @angular/material
 ```
 
 ### Configure MSAL moduele
@@ -46,7 +59,7 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes),
 		importProvidersFrom(
 			BrowserModule,
-			MarkdownModule.forRoot(),
+			MarkdownModule.forRoot(), // markdown module
 		),
 		provideNoopAnimations(),
 		// register msal interceptor

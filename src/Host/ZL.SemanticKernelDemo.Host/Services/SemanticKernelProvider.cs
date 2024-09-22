@@ -1,5 +1,4 @@
 ﻿
-using ZL.SemanticKernelDemo.Host.Models;
 
 namespace ZL.SemanticKernelDemo.Host.Services
 {
@@ -25,8 +24,10 @@ namespace ZL.SemanticKernelDemo.Host.Services
             builder.Services.AddLogging();
 
             // AOAI
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             string aoaiKey = configuration[SecretKeys.OpenAIKey];
             string aoaiEndpoint = configuration[SecretKeys.OpenAIEndpoint];
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             string depployment = "gpt-4o";
 
             if(aoaiEndpoint == null || aoaiKey == null)

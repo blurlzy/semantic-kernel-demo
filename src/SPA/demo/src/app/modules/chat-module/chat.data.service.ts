@@ -16,4 +16,9 @@ export class ChatDataService {
   // getItems(): Observable<any> {
   //   return this.http.get(`${environment.apiConfig2.uri}/items/private`);
   // }
+
+  // test
+  getProfile(): Observable<any> { 
+    return this.http.get(`${environment.copilotApiConfig.uri}/Chat/profile`);
+  }
 }

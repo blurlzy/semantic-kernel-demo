@@ -22,8 +22,10 @@ import { ChatService, ChatSession } from './chat-service';
                 <input class="form-control" [(ngModel)]="session.title" (blur)="save(session)">
             }
             @else{
-              <a [routerLink]="['/chat']" [queryParams]="{ id: session.id }" class="text-dark text-decoration-none">{{ session.title }}</a>
-              <i class="bi bi-check-lg" *ngIf="session.id == currentSessionId"></i>
+              <a [routerLink]="['/chat']" [queryParams]="{ id: session.id }" class="text-dark text-decoration-none">
+                {{ session.title }} <i class="bi bi-check-lg ms-2" *ngIf="session.id == currentSessionId"></i>
+              </a>
+              
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                   <i class="bi bi-three-dots-vertical"></i>
               </button>
@@ -137,7 +139,7 @@ export class SidebarComponent {
     console.log(session);
   }
 
-  updateSessionTitle(id: number, newTitle: string) {
-    this.chatService.updateSession(id, newTitle);
-  }
+  // updateSessionTitle(id: number, newTitle: string) {
+  //   this.chatService.updateSession(id, newTitle);
+  // }
 }

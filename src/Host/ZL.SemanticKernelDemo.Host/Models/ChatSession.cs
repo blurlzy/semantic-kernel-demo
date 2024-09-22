@@ -11,6 +11,20 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public string Id { get; set; }
 
+        [JsonIgnore]
+        public string Partition => this.Id;
+
+        /// <summary>
+        /// Id of the user who created this session.
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// Name of the user who created this message.
+        /// </summary>
+        public string UserName { get; set; }
+
+
         /// <summary>
         /// Title of the chat.
         /// </summary>
@@ -48,24 +62,25 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public string? Version { get; set; }
 
-        /// <summary>
-        /// The partition key for the session.
-        /// </summary>
-        [JsonIgnore]
-        public string Partition => this.Id;
+        // soft delete
+        public bool IsDeleted { get; set; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatSession"/> class.
         /// </summary>
         /// <param name="title">The title of the chat.</param>
         /// <param name="systemDescription">The system description of the chat.</param>
-        public ChatSession(string title, string systemDescription)
+        public ChatSession(string title, string systemDescription, string userId, string userName)
         {
             this.Id = Guid.NewGuid().ToString();
             this.Title = title;
+            this.UserId = userId;
+            this.UserName = userName;
             this.CreatedOn = DateTimeOffset.Now;
             this.SystemDescription = systemDescription;
             this.Version = CurrentVersion;
+            this.IsDeleted = false;
         }
     }
 }

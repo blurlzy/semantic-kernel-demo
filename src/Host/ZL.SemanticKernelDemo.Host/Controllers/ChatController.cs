@@ -4,7 +4,7 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ChatController : ControllerBase
+    public class ChatController : ApiBaseController
     {
         private readonly ILogger<ChatController> _logger;
 
@@ -70,6 +70,12 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
 
 
             return Ok(new { result = result });
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            return Ok(new { Upn = base.Upn, IdentityName = base.IdentityName, Email = base.Email, ObjectId = base.ObjectId });
         }
     }
 }

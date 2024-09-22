@@ -192,6 +192,14 @@ export class ChatComponent {
 
   }
 
+  ngOnInit() {
+
+    this.chatService.getProfile().subscribe((data: any) => {
+      console.log(data);
+    });
+  }
+
+
   send(): void {
 		this.loader.isLoading.next(true);
 		const req = { input: this.userInput.value };
