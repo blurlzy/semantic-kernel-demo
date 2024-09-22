@@ -1,5 +1,6 @@
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using ZL.SemanticKernelDemo.Host.Extensions;
+using ZL.SemanticKernelDemo.Host.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,11 @@ builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager()
 builder.Services.ConfigureAzureEntraIDAuth(builder.Configuration);
 // register semantic kernel 
 builder.Services.ConfigureSemanticKernel(builder.Configuration);
+// register mediatR
+builder.Services.ConfigureMediatR();
+// register persistence services
+builder.Services.ConfigurePersistence(builder.Configuration);
+
 // api controller
 builder.Services.AddControllers();
 // cors policy

@@ -34,6 +34,11 @@ namespace ZL.SemanticKernelDemo.Host
         //    return Task.CompletedTask;
         //}
 
+        // configure MediatR
+        public static void ConfigureMediatR(this IServiceCollection services)
+        {
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly));
+        }
 
         // configure CORS policy
         public static void ConfigureCors(this IServiceCollection services, string corsPolicy)

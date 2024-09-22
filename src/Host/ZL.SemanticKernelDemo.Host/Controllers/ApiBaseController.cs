@@ -7,13 +7,18 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
     [ApiController]
     public class ApiBaseController : ControllerBase
     {
+        // ! (null-forgiving) operator
+        // By using the null-forgiving operator, you inform the compiler that passing null is expected and shouldn't be warned about.
+        private ISender _mediator = null!;
+
+        // return the instance of MediatR
+        protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
+
         // return identity name
-        // * you will need include preferred_username as optionl claims when using Azure AD token v2.0
-        // The v1.0 tokens include preferred_username by default, but the v2.0 tokens do not.
         protected string IdentityName => (User.Identity != null && User.Identity.IsAuthenticated) ? User.Identity.Name ?? string.Empty : string.Empty;
 
         // upn 
-        // upn is not available for guest user
+        // ** upn is not available for guest user (Azure AD)
         protected string Upn
         {
             get

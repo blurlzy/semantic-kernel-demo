@@ -15,12 +15,12 @@ namespace ZL.SemanticKernelDemo.Host.Models
         public string Partition => this.Id;
 
         /// <summary>
-        /// Id of the user who created this session.
+        /// unique Id of the user who created this session. (azure object id)
         /// </summary>
         public string UserId { get; set; }
 
         /// <summary>
-        /// Name of the user who created this message.
+        /// Name of the user who created this message. (azure upn)
         /// </summary>
         public string UserName { get; set; }
 
@@ -35,15 +35,17 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public DateTimeOffset CreatedOn { get; set; }
 
-        /// <summary>
-        /// System description of the chat that is used to generate responses.
-        /// </summary>
-        public string SystemDescription { get; set; }
+        public DateTimeOffset? UpdatedOn { get; set; }
 
-        /// <summary>
-        /// Fixed system description with "TimeSkill" replaced by "TimePlugin"
-        /// </summary>
-        public string SafeSystemDescription => this.SystemDescription.Replace("TimeSkill", "TimePlugin", StringComparison.OrdinalIgnoreCase);
+        ///// <summary>
+        ///// System description of the chat that is used to generate responses.
+        ///// </summary>
+        //public string SystemDescription { get; set; }
+
+        ///// <summary>
+        ///// Fixed system description with "TimeSkill" replaced by "TimePlugin"
+        ///// </summary>
+        //public string SafeSystemDescription => this.SystemDescription.Replace("TimeSkill", "TimePlugin", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// The balance between long term memory and working term memory.
@@ -71,14 +73,14 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         /// <param name="title">The title of the chat.</param>
         /// <param name="systemDescription">The system description of the chat.</param>
-        public ChatSession(string title, string systemDescription, string userId, string userName)
+        public ChatSession(string title,  string userId, string userName)
         {
             this.Id = Guid.NewGuid().ToString();
             this.Title = title;
             this.UserId = userId;
             this.UserName = userName;
             this.CreatedOn = DateTimeOffset.Now;
-            this.SystemDescription = systemDescription;
+            //this.SystemDescription = systemDescription;
             this.Version = CurrentVersion;
             this.IsDeleted = false;
         }

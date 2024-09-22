@@ -1,23 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 // angular material
-import {MatMenuModule} from '@angular/material/menu';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-
-import { ChatService, ChatSession } from './chat-service';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog } from '@angular/material/dialog';
+// services
+import { ChatSessionMenuService } from '../core/chat-session-menu.service';
+import { ChatDataService } from '../modules/chat-module/chat.data.service';
+// components
+import { ChatSessionDialogComponent } from '../modules/chat-module/components/chat-session-dialog.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatMenuModule, MatButtonModule, MatFormFieldModule, RouterLink],
+  imports: [CommonModule, FormsModule, MatMenuModule, MatButtonModule, MatFormFieldModule, RouterLink, ChatSessionDialogComponent],
   template: `
     <div class="sidebar">
-      <button class="new-chat-button" (click)="addSession()">+ New Chat</button>
+      <button class="new-chat-button" (click)="openChatSessionDialog()">+ New Chat</button>
       <ul class="border-top">
-        <li *ngFor="let session of sessions" [class.active]="session.id === currentSessionId">            
+        <li *ngFor="let session of menuItems" [class.active]="session.id === currentSessionId">            
             @if(session.id === editSessionId) {
                 <input class="form-control" [(ngModel)]="session.title" (blur)="save(session)">
             }
@@ -26,7 +30,7 @@ import { ChatService, ChatSession } from './chat-service';
                 {{ session.title }} <i class="bi bi-check-lg ms-2" *ngIf="session.id == currentSessionId"></i>
               </a>
               
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-option-button">
                   <i class="bi bi-three-dots-vertical"></i>
               </button>
               <mat-menu #menu="matMenu">
@@ -90,47 +94,77 @@ import { ChatService, ChatSession } from './chat-service';
       background-color: #f5f4f0;
     }
 
+    .menu-option-button {
+        visibility: hidden;  /* Hidden by default */
+    }
+
+    .sidebar li:hover .menu-option-button {
+         visibility: visible; /* Show on hover */
+    }
   `
 })
 export class SidebarComponent {
-  sessions: ChatSession[] = [];
-  editSessionId:number | null = null;
-  currentSessionId: number | null = null;
-  newSessionTitle: string = 'New Chat';
+  menuItems: any = [];
+  editSessionId: number | null = null;
+  currentSessionId: string | null = null;
+  // newSessionTitle: string = 'New Chat';
+
+  readonly dialog = inject(MatDialog);
+  readonly menuService = inject(ChatSessionMenuService);
+  readonly chatDataService = inject(ChatDataService);
 
   // ctor
-  constructor(private activatedRoute: ActivatedRoute,
-             private chatService: ChatService) {
-    this.chatService.sessions$.subscribe((sessions) => {
-      this.sessions = sessions;
-    });
-
-    this.chatService.currentSessionId$.subscribe((id) => {
-      this.currentSessionId = id;
+  constructor(private activatedRoute: ActivatedRoute) {
+    // subscribe to the menu item changes
+    this.menuService.menuItems$.subscribe((menuItems) => {
+      this.menuItems = menuItems;
     });
   }
 
-  ngOnInit() {  
+  ngOnInit() {
     // query params change
-		this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(params => {
       //console.log(params);
-      this.currentSessionId = +params["id"];
-      console.log(this.currentSessionId);
-		});
+      this.currentSessionId = params["id"];
+    });
+
+    // load chat sessions
+    this.loadChatSessions();
   }
 
-  addSession() {
-    this.chatService.addSession(this.newSessionTitle);
+  private loadChatSessions() {
+    // get chat sessions
+    this.chatDataService.getChatSessions().subscribe(response => {
+      this.menuItems = response;
+    });
   }
+
+  // open new chat session dialog
+  openChatSessionDialog() {
+    const dialogRef = this.dialog.open(ChatSessionDialogComponent, {
+      data: {},
+      width: '390px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+
+      }
+    });
+
+  }
+
+  // addSession() {
+  //   this.menuService.addItem(this.newSessionTitle);
+  // }
 
   selectSession(id: number) {
     this.editSessionId = id;
-    //this.chatService.setCurrentSession(id);
   }
 
   deleteSession(id: number, event: Event) {
     event.stopPropagation();
-    this.chatService.deleteSession(id);
+    this.menuService.deleteItem(id);
   }
 
   save(session: any) {
@@ -139,7 +173,4 @@ export class SidebarComponent {
     console.log(session);
   }
 
-  // updateSessionTitle(id: number, newTitle: string) {
-  //   this.chatService.updateSession(id, newTitle);
-  // }
 }

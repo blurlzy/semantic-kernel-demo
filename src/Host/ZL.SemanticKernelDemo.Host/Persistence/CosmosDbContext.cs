@@ -35,25 +35,21 @@ namespace ZL.SemanticKernelDemo.Host.Persistence
               () => this._container.GetItemLinqQueryable<T>(true).Where(predicate).AsEnumerable());
         }
 
-        public async Task<IEnumerable<T>> ListItemsAsync(Func<T, bool> predicate)
+        // list items
+        public async Task<List<T>> ListItemsAsync(Expression<Func<T, bool>> predicate)
         {
             List<T> results = new List<T>();
 
-            // Get LINQ IQueryable object
-            IOrderedQueryable<T> queryable = _container.GetItemLinqQueryable<T>(true);
-
-            // Construct LINQ query
-            var matches = queryable.Where(predicate).AsQueryable();
-
-            // Convert to feed iterator
-            using FeedIterator<T> linqFeed = matches.ToFeedIterator();
-
-            // async
-            while (linqFeed.HasMoreResults && results.Count < MAX_LIST_COUNT)
+            // LINQ query generation
+            using (FeedIterator<T> iterator = _container.GetItemLinqQueryable<T>(false).Where(predicate).ToFeedIterator())
             {
-                foreach (var item in await linqFeed.ReadNextAsync())
+                // async
+                while (iterator.HasMoreResults && results.Count < MAX_LIST_COUNT)
                 {
-                    results.Add(item);
+                    foreach (var item in await iterator.ReadNextAsync())
+                    {
+                        results.Add(item);
+                    }
                 }
             }
 

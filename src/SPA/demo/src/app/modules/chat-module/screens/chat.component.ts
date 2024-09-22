@@ -194,9 +194,6 @@ export class ChatComponent {
 
   ngOnInit() {
 
-    this.chatService.getProfile().subscribe((data: any) => {
-      console.log(data);
-    });
   }
 
 

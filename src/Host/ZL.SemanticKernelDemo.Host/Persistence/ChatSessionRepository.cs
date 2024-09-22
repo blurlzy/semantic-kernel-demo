@@ -21,5 +21,23 @@
         {
             return await _context.CreateAsync(chatSession, chatSession.Id);
         }
+
+        // soft delete
+        public async Task SoftDeleteAsync(string id)
+        {
+            // get the entity
+            var entity = await _context.ReadAsync(id, id);
+
+            entity.IsDeleted = true;
+            entity.UpdatedOn = DateTimeOffset.Now;
+            // update
+            await _context.UpsertAsync(entity, entity.Id);
+        }
+
+        // delete
+        public async Task DeleteAsync(string id)
+        {
+            await _context.DeleteAsync(id, id);  
+        }
     }
 }

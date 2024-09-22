@@ -1,5 +1,4 @@
 ﻿
-using Microsoft.Azure.Cosmos;
 using ZL.SemanticKernelDemo.Host.Models;
 using ZL.SemanticKernelDemo.Host.Persistence;
 
@@ -23,14 +22,38 @@ namespace ZL.SemanticKernelTests
         }
 
         [Theory]
-        [InlineData("New Chat 1", "This is a testing chat", "zongyi")]
-        public async Task Add_ChatSession_Test(string title,string desc, string userId)
+        [InlineData("New Chat 3",  "zongyi")]
+        public async Task Add_ChatSession_Test(string title, string userId)
         {
             // 
-            var newChatSession = new ChatSession(title, desc, userId, userId);
+            var newChatSession = new ChatSession(title,  userId, userId);
 
             // save
             await _chatSessionRepository.CreateAsync(newChatSession);
+        }
+
+        [Theory]
+        [InlineData("zongyi")]
+        public async Task List_ChatSessions_Test(string userId)
+        {
+            var entities = await  _chatSessionRepository.ListChatSessionsAsync(userId);
+
+            Assert.NotNull(entities);
+        }
+
+
+        [Theory]
+        [InlineData("fc7c961b-5913-4036-a137-941ee2daf1c0")]
+        public async Task SoftDelete_ChatSession_Test(string id)
+        {
+            await _chatSessionRepository.SoftDeleteAsync(id);
+        }
+
+        [Theory]
+        [InlineData("fc7c961b-5913-4036-a137-941ee2daf1c0")]
+        public async Task Delete_ChatSession_Test(string id)
+        {
+            await _chatSessionRepository.DeleteAsync(id);
         }
     }
 }
