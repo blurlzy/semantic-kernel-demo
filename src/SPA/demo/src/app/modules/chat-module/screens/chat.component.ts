@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ChatDataService } from '../chat.data.service';
 import { ChatLoader } from '../../../core/chat-loader.service';
+import { ChatSessionMenuService } from '../../../core/chat-session-menu.service';
 
 @Component({
   selector: 'app-chat',
@@ -50,9 +51,8 @@ import { ChatLoader } from '../../../core/chat-loader.service';
     </div>
 
     <div class="input-area">
-      <textarea class="form-control me-1" [formControl]="userInput" rows="2"></textarea>
-      
-      <button type="button" class="btn btn-light " [disabled]="userInput.invalid || (loader.isLoading | async)" (click)="send()">
+      <textarea class="form-control me-1" [formControl]="userInput" rows="2" required></textarea>      
+      <button type="button" class="btn btn-light " [disabled]="userInput.invalid || (loader.isLoading | async) || !(menuService.hasChatSessions | async)" (click)="send()">
 				@if (loader.isLoading | async) {
 					<div class="spinner-grow text-primary" role="status">
 						<span class="visually-hidden">Loading...</span>
@@ -60,10 +60,13 @@ import { ChatLoader } from '../../../core/chat-loader.service';
 				}
 				@else {
 					<i class="bi bi-send "></i> Send
-				}
-					
-				</button>
+				}					
+				</button>                
     </div>
+
+    @if(!(menuService.hasChatSessions | async)){
+      <p class="fw-light ms-2 text-warning">Create a new chat session to start a new conversation</p>
+    }    
   </div>
   `,
   styles: `
@@ -176,20 +179,27 @@ import { ChatLoader } from '../../../core/chat-loader.service';
   `
 })
 export class ChatComponent {
+  // history message (both user and assistant)
   messages: any = [];
-  // request: any = {
-	// 	messages: []
-	// };
-  userInput = new FormControl('', [Validators.required]);
-  // userInput: string = '';
-  // isLoading: boolean = false;
-  // messageId: number = 0;
 
+  userInput = new FormControl('', [Validators.required]);
+  // create a new chat session to start a new conversation
   // ctor
   constructor(private sanitizer: DomSanitizer,
             private chatService: ChatDataService,
+            public menuService: ChatSessionMenuService,
 				    public loader: ChatLoader) {
+        this.menuService.hasChatSessions.subscribe((hasChatSessions: boolean) => {
+          console.log(hasChatSessions);
+          // at lease one chat session required before sending chat messages
+          if (!hasChatSessions) {
+            this.userInput.disable();
+          }
+          else{
+            this.userInput.enable();
+          }
 
+        });
   }
 
   ngOnInit() {
@@ -198,6 +208,7 @@ export class ChatComponent {
 
 
   send(): void {
+
 		this.loader.isLoading.next(true);
 		const req = { input: this.userInput.value };
 

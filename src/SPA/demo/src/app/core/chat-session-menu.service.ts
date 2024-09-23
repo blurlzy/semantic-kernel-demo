@@ -6,7 +6,8 @@ export class ChatSessionMenuService {
 	// menu items
 	private menuItems: any = [];
 
-	menuItems$ = new BehaviorSubject<any>(this.menuItems);
+	public menuItems$ = new BehaviorSubject<any>(this.menuItems);
+	public hasChatSessions: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	// ctor
 	constructor() {
@@ -14,6 +15,11 @@ export class ChatSessionMenuService {
 	}
 
 	// load menu items (chat sessions)
+	init(menuItems: any) {
+		this.menuItems = menuItems;
+		this.hasChatSessions.next(this.menuItems.length > 0);
+	}
+
 	// add menu item
 	addItem(id:string, title: string) {
 		const newItem = {
@@ -34,6 +40,7 @@ export class ChatSessionMenuService {
 
 	// publish the updated menu items
 	private publishChanges() {
+		this.hasChatSessions.next(this.menuItems.length > 0);
 		this.menuItems$.next(this.menuItems);
 	}
 }	

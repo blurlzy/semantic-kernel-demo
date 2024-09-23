@@ -115,11 +115,11 @@ export class SidebarComponent {
 
   // ctor
   constructor(private activatedRoute: ActivatedRoute) {
-    // // subscribe to the menu item changes
-    // this.menuService.menuItems$.subscribe((menuItems) => {
-    //   console.log("menu item changes", menuItems);
-    //   this.menuItems = menuItems;
-    // });
+    // subscribe to the menu item changes
+    this.menuService.menuItems$.subscribe((menuItems) => {
+      //console.log("menu item changes", menuItems);
+      this.menuItems = menuItems;
+    });
   }
 
   ngOnInit() {
@@ -137,6 +137,7 @@ export class SidebarComponent {
     // get chat sessions
     this.chatDataService.getChatSessions().subscribe(response => {
       this.menuItems = response;
+      this.menuService.init(this.menuItems);
     });
   }
 

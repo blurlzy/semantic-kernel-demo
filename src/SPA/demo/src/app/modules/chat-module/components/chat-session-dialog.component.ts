@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -33,6 +34,7 @@ export class ChatSessionDialogComponent {
   readonly chatDataService = inject(ChatDataService);
   readonly menuService = inject(ChatSessionMenuService);
   readonly loader = inject(Loader);
+  readonly router = inject(Router);
 
   // form control
   chatTitleCtrl = new FormControl('', [Validators.required]);
@@ -52,9 +54,11 @@ export class ChatSessionDialogComponent {
       .pipe(finalize(() => this.loader.isLoading.next(false)))
       .subscribe((response) => {
         // add into menu        
-        //console.log(response);
         this.menuService.addItem(response.id, response.title);    
         this.dialogRef.close();  
+
+        // navigate to chat session page
+        this.router.navigate(['/chat'], { queryParams: { id: response.id } });
       }); 
   }
 }

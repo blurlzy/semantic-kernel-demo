@@ -51,6 +51,11 @@ namespace ZL.SemanticKernelTests
 
         [Theory]
         [InlineData("fc7c961b-5913-4036-a137-941ee2daf1c0")]
+        [InlineData("c88fb17b-e2aa-4113-b0fc-31eacbc71807")]
+        [InlineData("575e282d-0484-41e1-968f-822edde7c276")]
+        [InlineData("9860ae55-3757-4bf1-b755-b23c498b150f")]
+        [InlineData("769aeea7-41eb-48bf-a338-4a1ae832f4ff")]
+        [InlineData("8b80147a-fbd8-4a12-adce-1d7eac50753d")]
         public async Task Delete_ChatSession_Test(string id)
         {
             await _chatSessionRepository.DeleteAsync(id);
