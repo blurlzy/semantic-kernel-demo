@@ -184,7 +184,6 @@ export class ChatComponent {
   messages: any = [];
 
   userInput = new FormControl('', [Validators.required]);
-  // create a new chat session to start a new conversation
   // ctor
   constructor(private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -212,8 +211,7 @@ export class ChatComponent {
         // load chat history
         this.loadChatHistory(chatSessionId);
       }
-      console.log(chatSessionId);
-
+      // console.log(chatSessionId);
     });
 
   }
