@@ -13,7 +13,7 @@ import {
 } from '@azure/msal-angular';
 
 // markdown module
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, CLIPBOARD_OPTIONS, ClipboardButtonComponent } from 'ngx-markdown';
 
 // app routes
 import { routes } from './app.routes';
@@ -29,7 +29,14 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     importProvidersFrom(
       BrowserModule,
-      MarkdownModule.forRoot(),
+      MarkdownModule.forRoot({
+        clipboardOptions: {
+          provide: CLIPBOARD_OPTIONS,
+          useValue: {
+            buttonComponent: ClipboardButtonComponent,
+          },
+        },
+      }),
     ),
     provideNoopAnimations(),
     // register msal interceptor

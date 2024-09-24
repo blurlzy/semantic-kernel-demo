@@ -26,6 +26,10 @@ export class ChatDataService {
   }
 
   /* chat messages */
+  getChatHistory(chatSessionId:string): Observable<any> {
+    return this.http.get(`${this.chatMessagesEndpoint}/${chatSessionId}/history-messages`);
+  }
+
   getChatMessages(request:any): Observable<any> {
     return this.http.post(`${environment.copilotApiConfig.uri}/Chat/Messages`, request);
   }

@@ -42,7 +42,9 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/prismjs/themes/prism.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/clipboard/dist/clipboard.min.js"
+            ]
           },
           "configurations": {
             "production": {

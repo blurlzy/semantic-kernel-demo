@@ -8,7 +8,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
   template: `
       <h5  mat-dialog-title class="text-danger ms-3 mt-2"><i class="bi bi-exclamation"></i></h5>
       <div mat-dialog-content>
-            <span>Are you sure you want to continue?</span>
+            <span>{{ data.message }}</span>
       </div>
       <div mat-dialog-actions>
         <button class="btn btn-light" [mat-dialog-close]="false" cdkFocusInitial>Close</button>

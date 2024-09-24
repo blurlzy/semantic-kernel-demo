@@ -16,6 +16,22 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
             this._logger = logger;
         }
 
+        [Route("{chatSessionId}/history-messages")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IEnumerable<CopilotChatMessage>> GetHistoryMessages(string chatSessionId)
+        {
+            var req = new ListChatHistoryRequest { ChatSessionId = chatSessionId, UserId = base.ObjectId };
+
+            var historyMessages = await base.Mediator.Send(req);
+
+            return historyMessages;
+        }
+
+
+
         [Route("messages")]
         [HttpPost]
         public async Task<IActionResult> ChatAsync([FromServices] Kernel kernel,

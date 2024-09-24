@@ -154,7 +154,7 @@ export class SidebarComponent {
   deleteChatSession(chatSession: any) {
     //  open confirm dialog
     const dialogRef = this.dialog.open(ConfirmComponent, {
-      data: {},
+      data: { message: `Are you sure you want to delete chat: ${chatSession.title}?` },
       width: '390px'
     });
 

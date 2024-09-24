@@ -18,6 +18,12 @@ namespace ZL.SemanticKernelDemo.Host.Persistence
             return await _context.ListItemsAsync(m => m.UserId == userId);
         }
 
+        // get the chat session by id
+        public async Task<ChatSession> GetChatSessionAsync(string chatSessionId)
+        {
+            return await _context.ReadAsync(chatSessionId, chatSessionId);
+        }
+
         // create a new chat session
         public async Task<ChatSession> CreateAsync(ChatSession chatSession)
         {

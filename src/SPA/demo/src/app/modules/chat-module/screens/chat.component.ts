@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { finalize, Subject } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 // material
@@ -29,7 +30,7 @@ import { ChatSessionMenuService } from '../../../core/chat-session-menu.service'
               <!-- Assistant messages with icon -->
               @if(message.sender === 'assistant'){
                 <!-- Assistant messages rendered as Markdown -->
-                <markdown [data]="message.text"></markdown>
+                <markdown [data]="message.text" clipboard></markdown>
               }
             
             <span class="timestamp">{{ message.timestamp | date: 'shortTime' }}</span>
@@ -185,32 +186,64 @@ export class ChatComponent {
   userInput = new FormControl('', [Validators.required]);
   // create a new chat session to start a new conversation
   // ctor
-  constructor(private sanitizer: DomSanitizer,
-            private chatService: ChatDataService,
-            public menuService: ChatSessionMenuService,
-				    public loader: ChatLoader) {
-        this.menuService.hasChatSessions.subscribe((hasChatSessions: boolean) => {
-          console.log(hasChatSessions);
-          // at lease one chat session required before sending chat messages
-          if (!hasChatSessions) {
-            this.userInput.disable();
-          }
-          else{
-            this.userInput.enable();
-          }
+  constructor(private activatedRoute: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private chatService: ChatDataService,
+    public menuService: ChatSessionMenuService,
+    public loader: ChatLoader) {
 
-        });
+    //disable the input area if there are no chat sessions
+    this.menuService.hasChatSessions.subscribe((hasChatSessions: boolean) => {
+      // at lease one chat session required before sending chat messages
+      if (!hasChatSessions) {
+        this.userInput.disable();
+      }
+      else {
+        this.userInput.enable();
+      }
+
+    });
+
+    // subscribe on chat session id changes
+    // query params change
+    this.activatedRoute.queryParams.subscribe(params => {
+      const chatSessionId = params["id"];
+      if (chatSessionId) {
+        // load chat history
+        this.loadChatHistory(chatSessionId);
+      }
+      console.log(chatSessionId);
+
+    });
+
   }
 
   ngOnInit() {
 
   }
 
+  private loadChatHistory(chatSessionId: string): void {
+
+    this.chatService.getChatHistory(chatSessionId)
+      .subscribe((data: any) => {
+        console.log(data);
+        for (let i = 0; i < data.length; i++) {
+          const message = data[i];
+          const messageData: any = {
+            sender: message.authorRole === 1 ? 'assistant' : 'user',
+            text: message.content,
+            timestamp: message.timestamp
+          };
+          this.messages.push(messageData);
+        }
+
+      });
+  }
 
   send(): void {
 
-		this.loader.isLoading.next(true);
-		const req = { input: this.userInput.value };
+    this.loader.isLoading.next(true);
+    const req = { input: this.userInput.value };
 
     const userMessage: any = {
       sender: 'user',
@@ -219,28 +252,28 @@ export class ChatComponent {
     };
     this.messages.push(userMessage);
     this.userInput.reset();
-    
-    // call API
-		this.chatService.getChatMessages(req)
-			.pipe(finalize(() => this.loader.isLoading.next(false)))
-			.subscribe((data: any) => {
-					console.log(data);
-          // Add assistant message
-          const assistantMessage: any = {
-            sender: 'assistant',
-            text: data.value,
-            // Include the icon using safe HTML
-            safeText: this.sanitizer.bypassSecurityTrustHtml(
-              `<i class="bi bi-robot"></i> ${data.value}`
-            ),
-            timestamp: new Date()
-          };
-          this.messages.push(assistantMessage);
 
-					// this.request.messages.push({ role: 'system', content: data.response });
-					// this.userInput.reset();
-				});	
-	}
+    // call API
+    this.chatService.getChatMessages(req)
+      .pipe(finalize(() => this.loader.isLoading.next(false)))
+      .subscribe((data: any) => {
+        console.log(data);
+        // Add assistant message
+        const assistantMessage: any = {
+          sender: 'assistant',
+          text: data.value,
+          // Include the icon using safe HTML
+          safeText: this.sanitizer.bypassSecurityTrustHtml(
+            `<i class="bi bi-robot"></i> ${data.value}`
+          ),
+          timestamp: new Date()
+        };
+        this.messages.push(assistantMessage);
+
+        // this.request.messages.push({ role: 'system', content: data.response });
+        // this.userInput.reset();
+      });
+  }
 
   // sendMessage() {
   //   if (this.userInput.trim()) {
