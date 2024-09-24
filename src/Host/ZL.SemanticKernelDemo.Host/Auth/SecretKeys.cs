@@ -1,4 +1,4 @@
-﻿namespace ZL.SemanticKernelDemo.Host.Models
+﻿namespace ZL.SemanticKernelDemo.Host.Auth
 {
     internal static class SecretKeys
     {

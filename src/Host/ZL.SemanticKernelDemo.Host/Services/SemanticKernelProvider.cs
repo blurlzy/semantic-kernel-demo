@@ -1,6 +1,4 @@
-﻿
-
-namespace ZL.SemanticKernelDemo.Host.Services
+﻿namespace ZL.SemanticKernelDemo.Host.Services
 {
     public class SemanticKernelProvider
     {

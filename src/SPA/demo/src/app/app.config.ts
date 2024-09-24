@@ -1,6 +1,7 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom, ErrorHandler } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 // http module
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch, } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -11,13 +12,15 @@ import {
   MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG, MsalService, MsalGuard, MsalBroadcastService,
 } from '@azure/msal-angular';
 
+// markdown module
 import { MarkdownModule } from 'ngx-markdown';
 
 // app routes
 import { routes } from './app.routes';
 // env
 import { environment } from '../environments/environment';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+// services
+import { GlobalErrorHandler } from './core/error-handler.service';
 
 // app config
 export const appConfig: ApplicationConfig = {
@@ -51,7 +54,8 @@ export const appConfig: ApplicationConfig = {
     MsalService,
     MsalGuard,
     MsalBroadcastService, provideAnimationsAsync(),
-
+    // error handler    
+    { provide: ErrorHandler,  useClass: GlobalErrorHandler}
   ],
 };
 

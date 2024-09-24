@@ -1,4 +1,6 @@
-﻿namespace ZL.SemanticKernelDemo.Host.Persistence
+﻿
+
+namespace ZL.SemanticKernelDemo.Host.Persistence
 {
     public class ChatSessionRepository
     {
@@ -7,7 +9,7 @@
         // ctor
         public ChatSessionRepository(CosmosDbContext<ChatSession> context)
         {
-                _context = context;
+            _context = context;
         }
 
         // get chat sessions for the user
@@ -22,6 +24,30 @@
             return await _context.CreateAsync(chatSession, chatSession.Id);
         }
 
+        public async Task<ChatSession> UpdateAsync(string chatSessionId)
+        {
+            // read
+            var chatSession = await _context.ReadAsync(chatSessionId, chatSessionId);
+
+            // last updated
+            chatSession.UpdatedOn = DateTimeOffset.UtcNow;
+
+            return await _context.UpsertAsync(chatSession, chatSessionId);
+        }
+
+        // update chat session
+        public async Task<ChatSession> UpdateAsync(string chatSessionId, string title)
+        {
+            // read
+            var chatSession = await _context.ReadAsync(chatSessionId, chatSessionId);
+
+            // update title
+            chatSession.Title = title;
+            chatSession.UpdatedOn = DateTimeOffset.UtcNow;
+
+            return await _context.UpsertAsync(chatSession, chatSessionId);
+        }
+        
         // soft delete
         public async Task SoftDeleteAsync(string id)
         {

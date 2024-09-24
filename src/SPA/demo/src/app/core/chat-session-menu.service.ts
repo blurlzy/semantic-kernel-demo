@@ -7,7 +7,7 @@ export class ChatSessionMenuService {
 	private menuItems: any = [];
 
 	public menuItems$ = new BehaviorSubject<any>(this.menuItems);
-	public hasChatSessions: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	public hasChatSessions: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
 	// ctor
 	constructor() {

@@ -10,7 +10,7 @@ using ZL.SemanticKernelTests.Plugins;
 using static ZL.SemanticKernelTests.CopilotChatMessage;
 using static ZL.SemanticKernelTests.Plugins.CustomerPlugin;
 
-namespace ZL.SemanticKernelTests
+namespace ZL.SemanticKernelTests.Tests
 {
     public class AOAI_Tests
     {
@@ -27,7 +27,7 @@ namespace ZL.SemanticKernelTests
         private readonly Kernel _kernel;
 
         private readonly ITestOutputHelper _output;
-        
+
         // ctor
         public AOAI_Tests(ITestOutputHelper output)
         {
@@ -63,16 +63,16 @@ namespace ZL.SemanticKernelTests
 
             var chatCompletion = _kernel.GetRequiredService<IChatCompletionService>();
 
-            var dataSource =  new AzureSearchChatDataSource
+            var dataSource = new AzureSearchChatDataSource
             {
                 Endpoint = new Uri(_searchEndpoint),
                 Authentication = DataSourceAuthentication.FromApiKey(_searchKey),
                 IndexName = "" // index name
             };
 
-            #pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             var promptExecutionSettings = new AzureOpenAIPromptExecutionSettings { AzureChatDataSource = dataSource };
-            #pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
             var chatMessage = await chatCompletion.GetChatMessageContentAsync(chatHistory, promptExecutionSettings);
             var response = chatMessage.Content!;
@@ -149,7 +149,7 @@ namespace ZL.SemanticKernelTests
             chatHistory.AddAssistantMessage(result2.ToString());
             _output.WriteLine(result2.ToString());
             _output.WriteLine("______________________________");
-            
+
             // add third user prompy
             chatHistory.AddUserMessage("Can you convert it into Typescript?");
             ChatMessageContent result3 = await chatCompletionService.GetChatMessageContentAsync(

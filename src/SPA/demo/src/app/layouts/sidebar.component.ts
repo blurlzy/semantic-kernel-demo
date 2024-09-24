@@ -12,18 +12,20 @@ import { ChatSessionMenuService } from '../core/chat-session-menu.service';
 import { ChatDataService } from '../modules/chat-module/chat.data.service';
 // components
 import { ChatSessionDialogComponent } from '../modules/chat-module/components/chat-session-dialog.component';
+import { ConfirmComponent } from '../shared/components/confirm.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatMenuModule, MatButtonModule, MatFormFieldModule, RouterLink, ChatSessionDialogComponent],
+  imports: [CommonModule, FormsModule, MatMenuModule, MatButtonModule, MatFormFieldModule, RouterLink,
+    ChatSessionDialogComponent, ConfirmComponent],
   template: `
     <div class="sidebar">
       <button class="new-chat-button" (click)="openChatSessionDialog()">+ New Chat</button>
       <ul class="border-top">
         <li *ngFor="let session of menuItems" [class.active]="session.id === currentSessionId">            
             @if(session.id === editSessionId) {
-                <input class="form-control" [(ngModel)]="session.title" (blur)="save(session)">
+                <input class="form-control" [(ngModel)]="session.title" (blur)="updateChatSession(session)">
             }
             @else{
               <a [routerLink]="['/chat']" [queryParams]="{ id: session.id }" class="text-dark text-decoration-none">
@@ -37,7 +39,7 @@ import { ChatSessionDialogComponent } from '../modules/chat-module/components/ch
                 <button mat-menu-item (click)="selectSession(session.id)">
                   <span><i class="bi bi-pencil-square"></i> Rename</span>
                 </button>
-                <button mat-menu-item (click)="deleteSession(session.id, $event)">    
+                <button mat-menu-item (click)="deleteChatSession(session)">    
                   <span><i class="bi bi-trash-fill"></i> Delete</span>
                 </button>
               </mat-menu>
@@ -107,7 +109,7 @@ export class SidebarComponent {
   menuItems: any = [];
   editSessionId: number | null = null;
   currentSessionId: string | null = null;
-  // newSessionTitle: string = 'New Chat';
+
 
   readonly dialog = inject(MatDialog);
   readonly menuService = inject(ChatSessionMenuService);
@@ -147,13 +149,31 @@ export class SidebarComponent {
       data: {},
       width: '390px'
     });
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined) {
-
-      }
+  deleteChatSession(chatSession: any) {
+    //  open confirm dialog
+    const dialogRef = this.dialog.open(ConfirmComponent, {
+      data: {},
+      width: '390px'
     });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        // delete chat session
+
+        // remove from menu
+      }
+    });
+  }
+
+  updateChatSession(chatSession: any) {
+    const req = { id: chatSession.id, title: chatSession.title };
+    // update chat session
+    this.chatDataService.updateChatSession(req).subscribe(response => {
+      // reset the edit session id
+      this.editSessionId = null;
+    });
   }
 
   // addSession() {

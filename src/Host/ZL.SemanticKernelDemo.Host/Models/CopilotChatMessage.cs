@@ -1,9 +1,26 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace ZL.SemanticKernelDemo.Host.Models
 {
     public class CopilotChatMessage
     {
+        /// <summary>
+        /// Id of the message.
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Id of the chat this message belongs to.
+        /// </summary>
+        public string ChatId { get; set; }
+
+        /// <summary>
+        /// The partition key for the source.
+        /// </summary>
+        [JsonIgnore]
+        public string Partition => this.ChatId;
+
         /// <summary>
         /// Timestamp of the message.
         /// </summary>
@@ -19,20 +36,12 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public string UserName { get; set; }
 
-        /// <summary>
-        /// Id of the chat this message belongs to.
-        /// </summary>
-        public string ChatId { get; set; }
 
         /// <summary>
         /// Content of the message.
         /// </summary>
         public string Content { get; set; }
 
-        /// <summary>
-        /// Id of the message.
-        /// </summary>
-        public string Id { get; set; }
 
         /// <summary>
         /// Role of the author of the message.
@@ -45,7 +54,6 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public string Prompt { get; set; } = string.Empty;
 
-
         /// <summary>
         /// Type of the message.
         /// </summary>
@@ -56,10 +64,32 @@ namespace ZL.SemanticKernelDemo.Host.Models
         /// </summary>
         public IDictionary<string, int>? TokenUsage { get; set; }
 
-        /// <summary>
-        /// The partition key for the source.
-        /// </summary>
-        [JsonIgnore]
-        public string Partition => this.ChatId;
+        // ctor
+        public CopilotChatMessage()
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.Timestamp = DateTimeOffset.Now;
+        }
+
+        public string ToFormattedString()
+        {
+            var messagePrefix = $"[{this.Timestamp.ToString("G", CultureInfo.CurrentCulture)}]";
+            switch (this.Type)
+            {
+                //case ChatMessageType.Document:
+                //    var documentMessage = DocumentMessageContent.FromString(this.Content);
+                //    var documentMessageContent = (documentMessage != null) ? documentMessage.ToFormattedString() : "documents";
+
+                //    return $"{messagePrefix} {this.UserName} uploaded: {documentMessageContent}";
+
+                case ChatMessageType.Plan:    // Fall through
+                case ChatMessageType.Message:
+                    return $"{messagePrefix} {this.UserName} said: {this.Content}";
+
+                default:
+                    // This should never happen.
+                    throw new InvalidOperationException($"Unknown message type: {this.Type}");
+            }
+        }
     }
 }

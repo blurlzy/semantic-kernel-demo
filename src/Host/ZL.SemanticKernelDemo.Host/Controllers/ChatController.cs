@@ -1,4 +1,6 @@
 ﻿
+using ZL.SemanticKernelDemo.Host.Models.DtoModels;
+
 namespace ZL.SemanticKernelDemo.Host.Controllers
 {
     [Authorize]
@@ -72,10 +74,10 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
             return Ok(new { result = result });
         }
 
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetProfile()
-        {
-            return Ok(new { Upn = base.Upn, IdentityName = base.IdentityName, Email = base.Email, ObjectId = base.ObjectId });
-        }
+        //[HttpGet("profile")]
+        //public async Task<IActionResult> GetProfile()
+        //{
+        //    return Ok(new { Upn = base.Upn, IdentityName = base.IdentityName, Email = base.Email, ObjectId = base.ObjectId });
+        //}
     }
 }

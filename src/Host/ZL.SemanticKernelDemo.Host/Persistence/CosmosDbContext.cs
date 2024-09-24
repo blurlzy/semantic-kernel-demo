@@ -84,7 +84,6 @@ namespace ZL.SemanticKernelDemo.Host.Persistence
             return await this._container.CreateItemAsync(entity, new PartitionKey(partitionKey));
         }
 
-
         public async Task<ItemResponse<T>> UpsertAsync(T entity, string partitionKey)
         {
             if (string.IsNullOrWhiteSpace(partitionKey))
