@@ -12,6 +12,6 @@ export const environment = {
     },
     copilotApiConfig: {
       scopes: ['api://eaa59094-d365-45df-a7c5-aae17459e3b9/access_as_user'],
-      uri: 'https://app-zl-coplit-api-dev.azurewebsites.net/api',
+      uri: 'https://app-chat-copilot-api.azurewebsites.net/api',
     }
   };
