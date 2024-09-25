@@ -1,5 +1,4 @@
 ﻿
-using ZL.SemanticKernelDemo.Host.Models.DtoModels;
 
 namespace ZL.SemanticKernelDemo.Host.Controllers
 {
@@ -34,66 +33,28 @@ namespace ZL.SemanticKernelDemo.Host.Controllers
 
         [Route("messages")]
         [HttpPost]
-        public async Task<IActionResult> ChatAsync([FromServices] Kernel kernel,
-                                                   [FromBody] Ask ask)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> ChatAsync([FromBody] Ask ask)
         {
-            // Create a chat history object
-            ChatHistory chatHistory = [];
+            var req = new AskRequest
+            {
+                ChatSessionId = ask.ChatSessionId,
+                UserInput = ask.Input,
+                UserId = base.ObjectId,
+                UserName = base.Upn,
+            };
 
-            // ask for the first option - pizza
-            chatHistory.AddSystemMessage("You are a helpful assistant.");
-            // chatHistory.AddUserMessage("What's available to order?");
-            // chatHistory.AddAssistantMessage("We have pizza, pasta, and salad available to order. What would you like to order?");
-            chatHistory.AddUserMessage(ask.Input);
-
-            // Once the services have been added, we then build the kernel and retrieve the chat completion service for later use.
-            // Retrieving chat completion services
-            var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
-
-            // Get the chat message content
-            ChatMessageContent result = await chatCompletionService.GetChatMessageContentAsync(
-                chatHistory,
-                kernel: kernel
-            );
+            var result = await base.Mediator.Send(req);
 
             AskResult chatAskResult = new()
             {
-                Value = result.ToString() ?? string.Empty,
-                //Variables = contextVariables.Select(v => new KeyValuePair<string, object?>(v.Key, v.Value))
+                Value = result.Content,
             };
 
             return this.Ok(chatAskResult);
         }
 
-        [AllowAnonymous]
-        [Route("plugins")]
-        [HttpGet]
-        public async Task<IActionResult> TestAsync([FromServices] Kernel kernel)
-        {
-            // get the function
-            KernelFunction myFunc = kernel.Plugins.GetFunction("CustomerPlugin", "GetCustomerInfo");
-
-            // Invoke function through kernel
-            FunctionResult customer = await kernel.InvokeAsync(myFunc, new() { ["customerId"] = "JL" });
-
-            // Initialize the chat history with the weather
-            ChatHistory chatHistory = new ChatHistory();
-
-            // Simulate a user message
-            chatHistory.AddSystemMessage("You are a helpful assistan. Please note: Justin's email address is: " + customer.GetValue<Customer>().Email);
-            chatHistory.AddUserMessage("Can you please tell me what's Justin's email address?");
-
-            var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
-            var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
-
-
-            return Ok(new { result = result });
-        }
-
-        //[HttpGet("profile")]
-        //public async Task<IActionResult> GetProfile()
-        //{
-        //    return Ok(new { Upn = base.Upn, IdentityName = base.IdentityName, Email = base.Email, ObjectId = base.ObjectId });
-        //}
     }
 }

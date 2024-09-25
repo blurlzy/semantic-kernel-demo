@@ -1,13 +1,5 @@
 ﻿
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using OpenAI.Chat;
-using System.Globalization;
-using System.Net;
-using System.Text.Json;
 using Xunit.Abstractions;
-using ZL.SemanticKernelTests.Plugins;
-using static ZL.SemanticKernelTests.CopilotChatMessage;
 using static ZL.SemanticKernelTests.Plugins.CustomerPlugin;
 
 namespace ZL.SemanticKernelTests.Tests
@@ -197,6 +189,16 @@ namespace ZL.SemanticKernelTests.Tests
                   chatHistory,
                   kernel: _kernel
               );
+
+            //var metaData = result.Metadata;
+      
+            //foreach(var key in metaData.Keys) 
+            //{
+            //    _output.WriteLine($"{key}: ${metaData[key]}");
+            //}
+
+            //_output.WriteLine(result.Role.Label);
+
             _output.WriteLine(result.ToString());
         }
 

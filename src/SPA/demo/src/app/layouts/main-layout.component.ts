@@ -22,9 +22,11 @@ import { SidebarComponent } from './sidebar.component';	// import the sidebar co
 			</nav>
 	
 			<!-- content area -->
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">			
-				<router-outlet></router-outlet>
-
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">		
+				<div class="container">
+					<router-outlet></router-outlet>
+				</div>	
+				
 				<!-- footer -->
 				<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
 					<p>&copy; ZL 2024</p>

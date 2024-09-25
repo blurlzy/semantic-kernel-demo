@@ -22,6 +22,7 @@ global using ZL.SemanticKernelDemo.Host.Auth;
 global using ZL.SemanticKernelDemo.Host.Attributes;
 global using ZL.SemanticKernelDemo.Host.Models;
 global using ZL.SemanticKernelDemo.Host.Models.DtoModels;
+global using ZL.SemanticKernelDemo.Host.Services;
 global using ZL.SemanticKernelDemo.Host.Services.Plugins;
 global using ZL.SemanticKernelDemo.Host.Requests;
 global using ZL.SemanticKernelDemo.Host.Persistence;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import { ChatSessionMenuService } from '../../../core/chat-session-menu.service'
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MarkdownModule, MatFormFieldModule, MatInputModule],
   template: `
   <div class="chat-container">
-    <div class="messages">
+    <div class="messages" >
       <ng-container *ngFor="let message of messages">
         <div [ngClass]="{'message-row': true, 'user-message': message.sender === 'user', 'assistant-message': message.sender === 'assistant'}">
            <div class="message-bubble">
@@ -51,8 +51,8 @@ import { ChatSessionMenuService } from '../../../core/chat-session-menu.service'
 
     </div>
 
-    <div class="input-area">
-      <textarea class="form-control me-1" [formControl]="userInput" rows="2" required></textarea>      
+    <div class="input-area">     
+       <textarea class="form-control me-1" [formControl]="userInput" rows="2" required></textarea>  
       <button type="button" class="btn btn-light " [disabled]="userInput.invalid || (loader.isLoading | async) || !(menuService.hasChatSessions | async)" (click)="send()">
 				@if (loader.isLoading | async) {
 					<div class="spinner-grow text-primary" role="status">
@@ -182,8 +182,9 @@ import { ChatSessionMenuService } from '../../../core/chat-session-menu.service'
 export class ChatComponent {
   // history message (both user and assistant)
   messages: any = [];
-
   userInput = new FormControl('', [Validators.required]);
+  chatSessionId:string = '';
+
   // ctor
   constructor(private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -206,10 +207,14 @@ export class ChatComponent {
     // subscribe on chat session id changes
     // query params change
     this.activatedRoute.queryParams.subscribe(params => {
-      const chatSessionId = params["id"];
-      if (chatSessionId) {
+      this.chatSessionId = params["id"];
+      if (this.chatSessionId) {
         // load chat history
-        this.loadChatHistory(chatSessionId);
+        this.loadChatHistory(this.chatSessionId);
+      }
+      else{
+        this.chatSessionId = '';
+        this.messages = [];
       }
       // console.log(chatSessionId);
     });
@@ -235,94 +240,71 @@ export class ChatComponent {
           this.messages.push(messageData);
         }
 
+        // scroll to bottom
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
       });
   }
 
   send(): void {
 
     this.loader.isLoading.next(true);
-    const req = { input: this.userInput.value };
+    // chat request
+    const req = { input: this.userInput.value, chatSessionId: this.chatSessionId };
 
+    // add user message into list
     const userMessage: any = {
       sender: 'user',
       text: this.userInput.value,
       timestamp: new Date()
     };
+
     this.messages.push(userMessage);
     this.userInput.reset();
 
     // call API
-    this.chatService.getChatMessages(req)
+    this.chatService.chat(req)
       .pipe(finalize(() => this.loader.isLoading.next(false)))
       .subscribe((data: any) => {
-        console.log(data);
+        //console.log(data);
         // Add assistant message
         const assistantMessage: any = {
           sender: 'assistant',
           text: data.value,
-          // Include the icon using safe HTML
-          safeText: this.sanitizer.bypassSecurityTrustHtml(
-            `<i class="bi bi-robot"></i> ${data.value}`
-          ),
+          // // Include the icon using safe HTML
+          // safeText: this.sanitizer.bypassSecurityTrustHtml(
+          //   `<i class="bi bi-robot"></i> ${data.value}`
+          // ),
           timestamp: new Date()
         };
-        this.messages.push(assistantMessage);
 
-        // this.request.messages.push({ role: 'system', content: data.response });
-        // this.userInput.reset();
+        // add assistant message into list
+        this.messages.push(assistantMessage);
       });
   }
 
-  // sendMessage() {
-  //   if (this.userInput.trim()) {
-  //     // Add user message
-  //     const userMessage: any = {
-  //       id: this.messageId++,
-  //       sender: 'user',
-  //       text: this.userInput,
-  //       timestamp: new Date()
-  //     };
-  //     this.messages.push(userMessage);
-  //     const userText = this.userInput;
-  //     this.userInput = '';
 
-  //     // Show loading indicator
-  //     this.isLoading = true;
-
-  //     // Simulate assistant response
-  //     setTimeout(() => {
-  //       const assistantReply = this.getAssistantReply(userText);
-  //       const assistantMessage: any = {
-  //         id: this.messageId++,
-  //         sender: 'assistant',
-  //         text: assistantReply,
-  //         // Include the icon using safe HTML
-  //         safeText: this.sanitizer.bypassSecurityTrustHtml(
-  //           `<i class="bi bi-robot"></i> ${assistantReply}`
-  //         ),
-  //         timestamp: new Date()
-  //       };
-  //       this.messages.push(assistantMessage);
-  //       this.isLoading = false;
-
-  //       // Auto-scroll to the latest message
-  //       this.scrollToBottom();
-  //     }, 1000);
-  //   }
-  // }
-
-  scrollToBottom() {
-    const messagesContainer = document.querySelector('.messages');
-    if (messagesContainer) {
-      setTimeout(() => {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 100);
+  private scrollToBottom(): void {
+    try {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    } catch (err) {
+      console.error('Scroll to page bottom failed:', err);
     }
   }
 
-  getAssistantReply(userText: string): string {
-    // Generate assistant's reply based on user input
-    return `You said: "${userText}"`;
-  }
+  // scrollToBottom() {
+  //   const messagesContainer = document.querySelector('.messages');
+  //   if (messagesContainer) {
+  //     setTimeout(() => {
+  //       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  //     }, 100);
+  //   }
+  // }
+
+  // getAssistantReply(userText: string): string {
+  //   // Generate assistant's reply based on user input
+  //   return `You said: "${userText}"`;
+  // }
 
 }
