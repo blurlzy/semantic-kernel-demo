@@ -12,6 +12,6 @@ export const environment = {
     },
     copilotApiConfig: {
       scopes: ['api://eaa59094-d365-45df-a7c5-aae17459e3b9/access_as_user'],
-      uri: 'https://app-chat-copilot-api.azurewebsites.net/api',
+      uri: 'https://aca-chat-coplit-api.redground-a7872c78.australiaeast.azurecontainerapps.io/api',
     }
   };

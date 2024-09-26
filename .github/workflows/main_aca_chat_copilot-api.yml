@@ -1,4 +1,4 @@
-name: Azure Container Apps Deploy
+name: Azure Container Apps CI/CD - aca-chat-coplit-api
 
 on:
   push:
