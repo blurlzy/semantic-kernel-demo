@@ -11,10 +11,10 @@ namespace ZL.SemanticKernelTests.Tests
         private readonly string _key = SecretManager.OpenAIKey;
         private readonly string _deployment = "gpt-4o";
 
-        // azure search
-        private readonly string _searchEndpoint = "";
-        private readonly string _searchKey = "";
-        private readonly string _searchIndex = "";
+        //// azure search
+        //private readonly string _searchEndpoint = "";
+        //private readonly string _searchKey = "";
+        //private readonly string _searchIndex = "";
 
         private readonly Kernel _kernel;
 
@@ -202,29 +202,29 @@ namespace ZL.SemanticKernelTests.Tests
             _output.WriteLine(result.ToString());
         }
 
-        [Theory]
-        [InlineData("JL")]
-        public async Task Customer_Plugin_Test(string customerId)
-        {
-            // init a plugin
-            KernelPlugin myPlugin = _kernel.CreatePluginFromType<CustomerPlugin>();
+        //[Theory]
+        //[InlineData("JL")]
+        //public async Task Customer_Plugin_Test(string customerId)
+        //{
+        //    // init a plugin
+        //    KernelPlugin myPlugin = _kernel.CreatePluginFromType<CustomerPlugin>();
 
-            // Invoke function through kernel
-            FunctionResult customer = await _kernel.InvokeAsync(myPlugin["GetCustomerInfo"], new() { ["customerId"] = customerId });
+        //    // Invoke function through kernel
+        //    FunctionResult customer = await _kernel.InvokeAsync(myPlugin["GetCustomerInfo"], new() { ["customerId"] = customerId });
 
-            // Initialize the chat history with the weather
-            ChatHistory chatHistory = new ChatHistory();
+        //    // Initialize the chat history with the weather
+        //    ChatHistory chatHistory = new ChatHistory();
 
-            // _output.WriteLine($"The JL's email is:  + {customer.GetValue<Customer>().Email}");
-            // Simulate a user message
-            chatHistory.AddSystemMessage("You are a helpful assistan. Please note: Justin's email address is: " + customer.GetValue<Customer>().Email);
-            chatHistory.AddUserMessage("Can you please tell me what's Justin's email address?");
+        //    // _output.WriteLine($"The JL's email is:  + {customer.GetValue<Customer>().Email}");
+        //    // Simulate a user message
+        //    chatHistory.AddSystemMessage("You are a helpful assistan. Please note: Justin's email address is: " + customer.GetValue<Customer>().Email);
+        //    chatHistory.AddUserMessage("Can you please tell me what's Justin's email address?");
 
-            var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
-            var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
+        //    var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+        //    var result = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
 
-            _output.WriteLine(result.ToString());
-        }
+        //    _output.WriteLine(result.ToString());
+        //}
 
         //// Extract chat history within token limit as a formatted string and optionally update the ChatHistory object with the allotted messages
         //private async Task<string> GetAllowedChatHistoryAsync()
