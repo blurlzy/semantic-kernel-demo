@@ -1,6 +1,11 @@
-﻿using Microsoft.SemanticKernel.Connectors.OpenAI;
+﻿using Azure.Search.Documents.Indexes;
+using Azure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.ComponentModel;
 using Xunit.Abstractions;
+using ZL.SemanticKernelDemo.Host.Services;
+using ZL.SemanticKernelDemo.Host.Services.Plugins;
 
 
 namespace ZL.SemanticKernelTests.Tests
@@ -12,10 +17,10 @@ namespace ZL.SemanticKernelTests.Tests
         private readonly string _key = SecretManager.OpenAIKey;
         private readonly string _deployment = "gpt-4o";
 
-        //// azure search
-        //private readonly string _searchEndpoint = "";
-        //private readonly string _searchKey = "";
-        //private readonly string _searchIndex = "";
+        // azure search
+        private readonly string _searchEndpoint = SecretManager.SearchEndpoint;
+        private readonly string _searchKey = SecretManager.SearchKey;
+        private readonly string _searchIndex = "azure-workshop-001";
 
         private readonly Kernel _kernel;
 
@@ -26,9 +31,26 @@ namespace ZL.SemanticKernelTests.Tests
             IKernelBuilder builder = Kernel.CreateBuilder();
             // add AOAI
             builder.AddAzureOpenAIChatCompletion(_deployment, _endpoint, _key);
+            
+            // Embedding generation service to convert string query to vector
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            builder.AddAzureOpenAITextEmbeddingGeneration("text-embedding-ada-002", _endpoint, _key);
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            // SearchIndexClient from Azure .NET SDK to perform search operations.
+            // Azure AI Search configuration
+            Uri endpoint = new(_searchEndpoint);
+            AzureKeyCredential keyCredential = new(_searchKey);
+
+            builder.Services.AddSingleton<SearchIndexClient>((_) => new SearchIndexClient(endpoint, keyCredential));
+            // Custom AzureAISearchService to configure request parameters and make a request.
+            builder.Services.AddSingleton<AzureAISearchService>();
+
             // add plugin
             builder.Plugins.AddFromType<TimeInformationPlugin>();
             builder.Plugins.AddFromType<CustomerPlugin>();
+            builder.Plugins.AddFromType<AzureAISearchPlugin>();
+
 
             // kernal
             _kernel = builder.Build();
@@ -56,6 +78,20 @@ namespace ZL.SemanticKernelTests.Tests
 
             _output.WriteLine(chatResult.ToString());
         }
+
+        [Theory]
+        [InlineData("What is the AMM Offer Navigator?")]
+        public async Task Azure_AI_Search_Test(string userInput)
+        {
+
+            string query2 = "{{search '" + userInput + "' collection='" + _searchIndex + "'}}";
+            // Query with index name
+            // The final prompt will look like this "Emily and David are...(more text based on data). Who is David?".
+            var result1 = await _kernel.InvokePromptAsync(query2);
+
+            _output.WriteLine(result1.ToString());
+        }
+
     }
 
 

@@ -1,4 +1,8 @@
-﻿namespace ZL.SemanticKernelDemo.Host.Services
+﻿using Azure.Search.Documents.Indexes;
+using Azure;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+
+namespace ZL.SemanticKernelDemo.Host.Services
 {
     public class SemanticKernelProvider
     {
@@ -22,10 +26,8 @@
             builder.Services.AddLogging();
 
             // AOAI
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            string aoaiKey = configuration[SecretKeys.OpenAIKey];
-            string aoaiEndpoint = configuration[SecretKeys.OpenAIEndpoint];
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            string aoaiKey = configuration[SecretKeys.OpenAIKey]!;
+            string aoaiEndpoint = configuration[SecretKeys.OpenAIEndpoint]!;
             string depployment = "gpt-4o";
 
             if(aoaiEndpoint == null || aoaiKey == null)
@@ -33,8 +35,26 @@
                 throw new ArgumentException($"Invalid Configuration. (AOAI Settings)");
             }
 
-            // add Azure OpenAI
+            // add AOAI chat completion service
             builder.AddAzureOpenAIChatCompletion(depployment, aoaiEndpoint, aoaiKey);
+
+            // add AOAI text embedding generation service
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            builder.AddAzureOpenAITextEmbeddingGeneration("text-embedding-ada-002", aoaiEndpoint, aoaiKey);
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            string searchEndpoint = configuration[SecretKeys.SearchEndpoint]!;
+            string searchKey = configuration[SecretKeys.SearchKey]!;
+
+            // Azure AI Search configuration
+            Uri endpoint = new(searchEndpoint);
+            AzureKeyCredential keyCredential = new(searchKey);
+
+            builder.Services.AddSingleton<SearchIndexClient>((_) => new SearchIndexClient(endpoint, keyCredential));
+            // Custom AzureAISearchService to configure request parameters and make a request.
+            builder.Services.AddSingleton<AzureAISearchService>();
+
+
 
             //            var memoryOptions = serviceProvider.GetRequiredService<IOptions<KernelMemoryConfig>>().Value;
 

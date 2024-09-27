@@ -1,6 +1,6 @@
 ﻿
 using Xunit.Abstractions;
-using static ZL.SemanticKernelTests.Plugins.CustomerPlugin;
+
 
 namespace ZL.SemanticKernelTests.Tests
 {
@@ -44,31 +44,31 @@ namespace ZL.SemanticKernelTests.Tests
             //_kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion(model, apiKey, orgId);
         }
 
-        [Fact]
-        public async Task Chat_Own_Data_Test()
-        {
-            // Create a chat history object
-            ChatHistory chatHistory = [];
+//        [Fact]
+//        public async Task Chat_Own_Data_Test()
+//        {
+//            // Create a chat history object
+//            ChatHistory chatHistory = [];
 
-            // First question without previous context based on uploaded content.
-            chatHistory.AddUserMessage("How did Emily and David meet?");
+//            // First question without previous context based on uploaded content.
+//            chatHistory.AddUserMessage("How did Emily and David meet?");
 
-            var chatCompletion = _kernel.GetRequiredService<IChatCompletionService>();
+//            var chatCompletion = _kernel.GetRequiredService<IChatCompletionService>();
 
-            var dataSource = new AzureSearchChatDataSource
-            {
-                Endpoint = new Uri(_searchEndpoint),
-                Authentication = DataSourceAuthentication.FromApiKey(_searchKey),
-                IndexName = "" // index name
-            };
+//            var dataSource = new AzureSearchChatDataSource
+//            {
+//                Endpoint = new Uri(_searchEndpoint),
+//                Authentication = DataSourceAuthentication.FromApiKey(_searchKey),
+//                IndexName = "" // index name
+//            };
 
-#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            var promptExecutionSettings = new AzureOpenAIPromptExecutionSettings { AzureChatDataSource = dataSource };
-#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+//#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+//            var promptExecutionSettings = new AzureOpenAIPromptExecutionSettings { AzureChatDataSource = dataSource };
+//#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-            var chatMessage = await chatCompletion.GetChatMessageContentAsync(chatHistory, promptExecutionSettings);
-            var response = chatMessage.Content!;
-        }
+//            var chatMessage = await chatCompletion.GetChatMessageContentAsync(chatHistory, promptExecutionSettings);
+//            var response = chatMessage.Content!;
+//        }
 
         // chat history
         // The chat history object is used to maintain a record of messages in a chat session.

@@ -19,11 +19,13 @@ namespace ZL.SemanticKernelTests
                                        ExcludeSharedTokenCacheCredential = true
                                    }));
 
-        //
+        // AOAI
         internal static string OpenAIEndpoint => GetSecret(SecretKeys.OpenAIEndpoint);
         internal static string OpenAIKey => GetSecret(SecretKeys.OpenAIKey);
-        //internal static string SearchEndpoint => GetSecret(SecretKeys.SearchEndpoint);
-        //internal static string SearchKey => GetSecret(SecretKeys.SearchKey);
+
+        // AI Search
+        internal static string SearchEndpoint => GetSecret(SecretKeys.SearchEndpoint);
+        internal static string SearchKey => GetSecret(SecretKeys.SearchKey);
 
         // get secret from azure key vault
         internal static string GetSecret(string secretName) => Client.GetSecret(secretName).Value.Value;
@@ -35,9 +37,9 @@ namespace ZL.SemanticKernelTests
         public const string OpenAIEndpoint = "OpenAIEndpoint";
         public const string OpenAIKey = "OpenAIKey";
 
-        //// AI Search
-        //public const string SearchEndpoint = "SearchEndpoint";
-        //public const string SearchKey = "SearchKey";
+        // AI Search
+        public const string SearchEndpoint = "SearchEndpoint";
+        public const string SearchKey = "SearchKey";
 
         // Cosmos
         public const string CosmosConnection = "CosmosConnection";

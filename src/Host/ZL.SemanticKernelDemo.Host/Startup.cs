@@ -1,38 +1,11 @@
-﻿using Microsoft.OpenApi.Models;
-using ZL.SemanticKernelDemo.Host.Services;
+﻿using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.OpenApi.Models;
+
 
 namespace ZL.SemanticKernelDemo.Host
 {
     public static class Startup
     {
-        // register / configure services
-        public static void ConfigureSemanticKernel(this IServiceCollection services, IConfiguration configuration)
-        {
-            // init kernal provider
-            services.AddSingleton(sp => new SemanticKernelProvider(sp, configuration));
-
-            // semantic kernel service
-            services.AddScoped<Kernel>(
-                sp => {
-
-                    var provider = sp.GetRequiredService<SemanticKernelProvider>();
-                    var kernel = provider.GetCompletionKernel();
-
-                    // plugins
-                    // kernel.ImportPluginFromObject(new CustomerPlugin(), nameof(CustomerPlugin));
-                    kernel.ImportPluginFromType<CustomerPlugin>();
-                    return kernel;
-                });
-
-        }
-
-        //private static Task RegisterChatCopilotFunctionsAsync(IServiceProvider sp, Kernel kernel)
-        //{
-        //    // customer plugin 
-        //    kernel.ImportPluginFromObject(new CustomerPlugin(), nameof(CustomerPlugin));
-
-        //    return Task.CompletedTask;
-        //}
 
         // configure MediatR
         public static void ConfigureMediatR(this IServiceCollection services)
@@ -91,6 +64,15 @@ namespace ZL.SemanticKernelDemo.Host
 
                 c.AddSecurityRequirement(securityRequirement);
             });
+        }
+
+        // configure application insights
+        public static void ConfigureApplicationInsights(this IServiceCollection services, IConfiguration configuration)
+        {
+            // retreive the connection string from key vault
+            var appInsightsConnection = configuration[SecretKeys.AppInsightsConnection];
+            var options = new ApplicationInsightsServiceOptions { ConnectionString = appInsightsConnection };
+            services.AddApplicationInsightsTelemetry(options: options);
         }
     }
 }

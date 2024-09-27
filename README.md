@@ -1,5 +1,7 @@
 # Copilot Chat Demo 
-A Chat bot demo application built on top of Semantic Kernel.
+This chatbot demo application is built on top of Semantic Kernel and hosted on Azure. It leverages Azure OpenAI and Azure AI search to provide Retrieval-Augmented Generation (RAG) capabilities. Chat history is securely stored in Azure Cosmos DB. The user interface is developed using Angular 18, and the backend API is powered by ASP.NET Core 8.0.
+
+![Chat Copilot answering a question](https://github.com/blurlzy/semantic-kernel-demo/blob/main/snapshot.png)
 
 ## Semantic Kernel
 

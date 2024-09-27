@@ -1,6 +1,6 @@
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using ZL.SemanticKernelDemo.Host.Extensions;
-using ZL.SemanticKernelDemo.Host.Persistence;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +27,8 @@ builder.Services.ConfigureSemanticKernel(builder.Configuration);
 builder.Services.ConfigureMediatR();
 // register persistence services
 builder.Services.ConfigurePersistence(builder.Configuration);
+// register application insights
+builder.Services.ConfigureApplicationInsights(builder.Configuration);
 
 // api controller
 builder.Services.AddControllers();
