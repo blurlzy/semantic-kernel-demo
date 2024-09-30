@@ -226,10 +226,11 @@ export class ChatComponent {
   }
 
   private loadChatHistory(chatSessionId: string): void {
-
+    // reset messages
+    this.messages = [];
     this.chatService.getChatHistory(chatSessionId)
       .subscribe((data: any) => {
-        console.log(data);
+        //console.log(data);
         for (let i = 0; i < data.length; i++) {
           const message = data[i];
           const messageData: any = {
