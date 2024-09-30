@@ -17,18 +17,18 @@ import { SidebarComponent } from './sidebar.component';	// import the sidebar co
 
 	<div class="container-fluid" style="margin-top: 60px;">
 		<div class="row">
-			<nav class="col-md-3 col-lg-2 d-md-block collapse border-end" [ngClass]="sidebarCollapsed ? '' : 'show'">
+			<nav class="d-md-block collapse" [ngClass]="sidebarCollapsed ? '' : 'show'">
 				<app-sidebar></app-sidebar>
 			</nav>
 	
 			<!-- content area -->
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">		
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 border-start">		
 				<div class="container">
 					<router-outlet></router-outlet>
 				</div>	
 				
 				<!-- footer -->
-				<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+				<div class="d-flex flex-column flex-sm-row justify-content-between py-1 my-4 border-top">
 					<p>&copy; ZL 2024</p>
 					<ul class="list-unstyled d-flex">
 						<li class="ms-3"><a class="text-dark" href="https://github.com/blurlzy" target="_blank"><i class="bi bi-github"></i></a></li>

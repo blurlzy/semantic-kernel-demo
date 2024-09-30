@@ -61,6 +61,7 @@ namespace ZL.SemanticKernelTests.Tests
         [Theory]
         [InlineData("What time is it?")]
         [InlineData("What's  the email address for customer: zongyi?")]
+        [InlineData("Can you list the states in Australia?")]
         public async Task Plugin_Call_Test(string userInput)
         {
             // Get chat completion service
@@ -79,19 +80,97 @@ namespace ZL.SemanticKernelTests.Tests
             _output.WriteLine(chatResult.ToString());
         }
 
+
         [Theory]
-        [InlineData("What is the AMM Offer Navigator?")]
+        [InlineData("What is  the email address for customer zongyi?")]
+        public async Task Plugin_Call_Test2(string userInput)
+        {
+            // init a plugin
+            KernelPlugin myPlugin = _kernel.CreatePluginFromType<CustomerPlugin>();
+
+            // Invoke function through kernel
+            FunctionResult result = await _kernel.InvokeAsync(myPlugin["GetCustomerEmail"], new() { ["customerId"] = userInput });
+            _output.WriteLine(result.ToString());
+
+
+            KernelArguments arguments = new();
+            arguments["customerId"] = userInput;
+            var result2 = await _kernel.InvokeAsync<string>("CustomerPlugin", "GetCustomerEmail", arguments);
+            _output.WriteLine(result2.ToString());
+
+
+            string promptTemplate = "{{GetCustomerEmail '" + userInput + "'}}";
+            var result3 = await _kernel.InvokePromptAsync(promptTemplate);
+            _output.WriteLine(result3.ToString());
+            
+        }
+
+
+        [Theory]
+        [InlineData("What's the AMM Offer Navigator?")]
         public async Task Azure_AI_Search_Test(string userInput)
         {
+            // replace single quote
+            userInput = userInput.Replace('\'', '"');
 
-            string query2 = "{{search '" + userInput + "' collection='" + _searchIndex + "'}}";
+            // specify the function name: search with query & collection (search index) 
+            string prompt = "{{search '" + userInput + "' collection='" + _searchIndex + "'}}";
             // Query with index name
             // The final prompt will look like this "Emily and David are...(more text based on data). Who is David?".
-            var result1 = await _kernel.InvokePromptAsync(query2);
+            var result1 = await _kernel.InvokePromptAsync(prompt);
 
             _output.WriteLine(result1.ToString());
         }
 
+
+        [Theory]
+        [InlineData("What's the AMM Offer Navigator?")]
+        public async Task Azure_AI_Search_Test1(string userInput)
+        {
+
+            KernelArguments arguments = new();
+            arguments["query"] = userInput;
+            arguments["collection"] = _searchIndex;
+            var result = await _kernel.InvokeAsync("AzureAISearchPlugin", "Search", arguments);
+
+            _output.WriteLine(result.ToString());
+        }
+
+
+        [Theory]
+        [InlineData("What is the AMM Offer Navigator?")]
+        public async Task Azure_AI_Search_Test2(string userInput)
+        {
+
+            // chat history
+            ChatHistory chatHistory = new();
+
+            // add system message
+            chatHistory.AddUserMessage(userInput);
+
+            var chatCompletion = _kernel.GetRequiredService<IChatCompletionService>();
+
+            var dataSource = new AzureSearchChatDataSource
+            {
+                Endpoint = new Uri(_searchEndpoint),
+                Authentication = DataSourceAuthentication.FromApiKey(_searchKey),
+                IndexName = _searchIndex // index name
+            };
+
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            var promptExecutionSettings = new AzureOpenAIPromptExecutionSettings
+            {
+                //ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+                AzureChatDataSource = dataSource,
+            };
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            //var chatMessage = await chatCompletion.GetChatMessageContentAsync(chatHistory, promptExecutionSettings);
+            var result = await _kernel.InvokePromptAsync(userInput, new (promptExecutionSettings));
+            //var response = chatMessage.Content!;
+
+            _output.WriteLine(result.ToString());
+        }
     }
 
 
@@ -112,17 +191,19 @@ namespace ZL.SemanticKernelTests.Tests
     /// <summary>
     /// 
     /// </summary>
-    public class CustomerPlugin
+    public  sealed class CustomerPlugin
     {
         [KernelFunction("GetCustomerEmail"), Description("Retrieve customer email based on the given customer ID.")]
-        public Customer GetCustomerEmail(string customerId)
+        public string GetCustomerEmail(string customerId)
         {
             if(customerId.ToLower() == "justin")
             {
-                return new Customer { Email = "justin.li@testing.com" };
+                return "justin.li@testing.com";
+                // return new Customer { Email = "justin.li@testing.com" };
             }
 
-            return new Customer { Email = "unknown@testing.com" };
+            return "unknown@testing.com";
+            //return new Customer { Email = "unknown@testing.com" };
         }
 
         public class Customer

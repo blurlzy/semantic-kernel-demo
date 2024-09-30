@@ -51,6 +51,11 @@ import { ConfirmComponent } from '../shared/components/confirm.component';
   `,
   styles: `
     .sidebar {
+      position: fixed;
+      top: 60px; /* Adjust based on your top navigation bar height */
+      bottom: 0;
+      left: 0;
+      width: 285px;
       display: flex;
       flex-direction: column;
     }

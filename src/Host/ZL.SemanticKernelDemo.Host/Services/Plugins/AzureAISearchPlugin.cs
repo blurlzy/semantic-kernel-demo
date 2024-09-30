@@ -1,4 +1,5 @@
 ﻿using Microsoft.SemanticKernel.Embeddings;
+using System.ComponentModel;
 
 namespace ZL.SemanticKernelDemo.Host.Services.Plugins
 {
@@ -19,7 +20,7 @@ namespace ZL.SemanticKernelDemo.Host.Services.Plugins
 
         private readonly AzureAISearchService _searchService = searchService;
 
-        [KernelFunction("Search")]
+        [KernelFunction("Search"), Description("Search results from Azure AI search")]
         public async Task<string> SearchAsync(
             string query,
             string collection,
