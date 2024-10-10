@@ -55,7 +55,7 @@ import { ConfirmComponent } from '../shared/components/confirm.component';
       top: 60px; /* Adjust based on your top navigation bar height */
       bottom: 0;
       left: 0;
-      min-width: 220px;
+      min-width: 200px;
       display: flex;
       flex-direction: column;
     }

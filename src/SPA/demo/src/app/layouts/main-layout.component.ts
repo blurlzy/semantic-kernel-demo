@@ -17,7 +17,7 @@ import { SidebarComponent } from './sidebar.component';	// import the sidebar co
 
 	<div class="container-fluid" style="margin-top: 60px;">
 		<div class="row">
-			<nav class="d-md-block collapse" [ngClass]="sidebarCollapsed ? '' : 'show'">
+			<nav class="col-md-3 ms-sm-auto col-lg-2 d-md-block collapse" [ngClass]="sidebarCollapsed ? '' : 'show'">
 				<app-sidebar></app-sidebar>
 			</nav>
 	
